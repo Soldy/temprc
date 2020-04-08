@@ -1,0 +1,24 @@
+{
+  "name": "temprc",
+  "version": "1.0.0",
+  "description": "temp db manager",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Soldy/temprc.git"
+  },
+  "keywords": [],
+  "author": "Soldy",
+  "license": "GPLv3",
+  "bugs": {
+    "url": "https://github.com/Soldy/temprc/issues"
+  },
+  "homepage": "https://github.com/Soldy/temprc#readme",
+  "devDependencies": {
+    "interactiveConsole": "0.0.7-alpha0",
+    "nanoTest": "0.0.4-alpha"
+  }
+}
