@@ -22,6 +22,7 @@ exports.temprc=function(storageFile){
         if(typeof id !== "string")
             return false;
         delete db[id];
+        save();
         return true;
     };
     /*
@@ -35,6 +36,7 @@ exports.temprc=function(storageFile){
         if (typeof val === "underfined")
             return false;
         db[id] = val;
+        save();
         return true;
     };
     /*
