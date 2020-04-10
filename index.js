@@ -51,6 +51,18 @@ exports.temprc=function(storageFile){
             return true;
         return false;
     };
+    /*
+     * @public
+     */
+    this.all=function(){
+        if(
+            (typeof id !== "string") ||
+            (typeof db[id] !== "undefined")
+        )
+            return true;
+        return false;
+    };
+
     /*:
      * @private
      */
