@@ -2,7 +2,8 @@ const fs = require("fs");
 
 
 
-exports.temprc=function(storageFile){
+exports.temprc=function(storageFile, indexes){
+    this.indexRefresh = 
     /*
      * @param {string} id
      * @public
@@ -62,11 +63,35 @@ exports.temprc=function(storageFile){
             return true;
         return false;
     };
+    /*
+     * @private
+     */
+    let indexClear = function(id){
+        if(indexEnable === false)
+            return false;
+        for(let i of indexable)
+            if(typeof db[id][i] !== "undefined")
+                if(typeof dbIndex[i][db[id][i]] !== "undefined")
+                    delete dbIndex[i][db[id][i]];
+    }
     /*:
      * @private
      */
-    let index = function(){
-        db = JSON.parse(fs.readFileSync(dbFile).toString());
+    let indexTo = function(id, container){
+        if(indexEnable === false)
+            return false;
+        for(let i in container)
+            if(indexable.indexOf(i) > -1)
+                 dbIndex[i][db[id][i]]=id;
+    };
+    /*:
+     * @private
+     */
+    let indexAll = function(id, container){
+        if(indexEnable === false)
+            return false;
+        for(let id in db)
+            indexTo(id, db[id]);
     };
     /*:
      * @private
@@ -105,7 +130,28 @@ exports.temprc=function(storageFile){
      * @private
      */
     let dbFile = storageFile;
+    /*
+     * @private
+     */
+    let indexEnable = false;
+    /*
+     * @private
+     * @var object
+     */
+    let dbIndex = {};
+    /*
+     * @private
+     * @var array
+     */
+    let indexable = [];
     //costructor
+    if(typeof indexes !== "undefined"){
+        indexable = indexes;
+        indexEnable = true;
+        for(let i of indexable)
+            dbIndex[i] = {};
+    }
+
 };
 
 
