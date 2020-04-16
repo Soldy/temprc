@@ -62,7 +62,12 @@ exports.temprc=function(storageFile){
             return true;
         return false;
     };
-
+    /*:
+     * @private
+     */
+    let index = function(){
+        db = JSON.parse(fs.readFileSync(dbFile).toString());
+    };
     /*:
      * @private
      */
@@ -73,12 +78,32 @@ exports.temprc=function(storageFile){
      *@private
      */
     let save = async function(){
+        if(writing === true)
+            return rewrite = true;
+        writing = true;
         fs.writeFileSync(dbFile, JSON.stringify(db));
+        writing = false;
+        if (rewrite === false )
+            return true;
+        rewrite = false;
+        return save();
     }
     /*
      * @private
      */
+    let writing = false;
+    /*
+     * @private
+     */
+    let rewrite = false;
+
+    /*
+     * @private
+     */
     let db = {};
+    /*
+     * @private
+     */
     let dbFile = storageFile;
     //costructor
 };
