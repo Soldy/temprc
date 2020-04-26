@@ -146,7 +146,9 @@ exports.temprc=function(storageFile, indexes){
         for(let i of indexable)
             dbIndex[i] = {};
     }
-
+    try{
+        read();
+    }catch(e){};
 };
 
 
