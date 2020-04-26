@@ -56,12 +56,7 @@ exports.temprc=function(storageFile, indexes){
      * @public
      */
     this.all=function(){
-        if(
-            (typeof id !== "string") ||
-            (typeof db[id] !== "undefined")
-        )
-            return true;
-        return false;
+        return db;
     };
     /*
      * @private
