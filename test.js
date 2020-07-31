@@ -33,6 +33,16 @@ nanoTest.add(
 );
 
 nanoTest.add(
+    "check test1 list",
+    {
+        "function":temprc.list
+    },
+    "j==",
+    ['test1']
+);
+
+
+nanoTest.add(
     "check test1 check ",
     {
         "function":temprc.check,
