@@ -3,10 +3,13 @@ const fs = require("fs");
 
 
 exports.temprc=function(storageFile, indexes){
-    this.indexRefresh = 
+    this.indexRefresh = function(){
+
+    }
     /*
      * @param {string} id
      * @public
+     * @var mixed
      */
     this.get=function(id){
         if(typeof id !== "string")
@@ -18,6 +21,7 @@ exports.temprc=function(storageFile, indexes){
     /*
      * @param {string} id
      * @public
+     * @var boolean
      */
     this.del=function(id){
         if(typeof id !== "string")
@@ -30,6 +34,7 @@ exports.temprc=function(storageFile, indexes){
      * @param {string} id
      * @param {varius} val
      * @public
+     * @var  boolean
      */
     this.set=function(id, val){
         if (typeof id !== "string")
@@ -43,6 +48,7 @@ exports.temprc=function(storageFile, indexes){
     /*
      * @param {string}- id
      * @public
+     * @var boolean
      */
     this.check=function(id){
         if(
@@ -54,10 +60,22 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @public
+     * @var object 
      */
     this.all=function(){
         return db;
     };
+    /*
+     *
+     * @public
+     * @var array
+     */
+    this.list=function(){
+        let out = [];
+        for(let i in  db)
+            out.push(i);
+        return out;
+    }
     /*
      * @private
      */
@@ -69,7 +87,7 @@ exports.temprc=function(storageFile, indexes){
                 if(typeof dbIndex[i][db[id][i]] !== "undefined")
                     delete dbIndex[i][db[id][i]];
     }
-    /*:
+    /*
      * @private
      */
     let indexTo = function(id, container){
@@ -79,7 +97,7 @@ exports.temprc=function(storageFile, indexes){
             if(indexable.indexOf(i) > -1)
                  dbIndex[i][db[id][i]]=id;
     };
-    /*:
+    /*
      * @private
      */
     let indexAll = function(id, container){
@@ -88,7 +106,7 @@ exports.temprc=function(storageFile, indexes){
         for(let id in db)
             indexTo(id, db[id]);
     };
-    /*:
+    /*
      * @private
      */
     let read = function(){
