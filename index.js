@@ -3,6 +3,31 @@ const fs = require("fs");
 
 
 exports.temprc=function(storageFile, indexes){
+    /*
+     * @public
+     * @var boolean
+     */
+    this.save = function(){
+        return save();
+    };
+    /*
+     * @public
+     * @var boolean
+     */
+    this.setup = function(name, value){
+        if(
+            (name === 'autosave')&&
+            (([true,false]).indexOf(value)>-1)
+        ){
+            autoSave = value;
+            return true;
+        };
+        return false;
+    };
+    /*
+     * @public
+     * @var boolean
+     */
     this.indexRefresh = function(){
 
     }
@@ -27,7 +52,7 @@ exports.temprc=function(storageFile, indexes){
         if(typeof id !== "string")
             return false;
         delete db[id];
-        save();
+        saveAuto();
         return true;
     };
     /*
@@ -42,7 +67,7 @@ exports.temprc=function(storageFile, indexes){
         if (typeof val === "underfined")
             return false;
         db[id] = val;
-        save();
+        saveAuto();
         return true;
     };
     /*
@@ -75,7 +100,7 @@ exports.temprc=function(storageFile, indexes){
         for(let i in  db)
             out.push(i);
         return out;
-    }
+    };
     /*
      * @private
      */
@@ -86,7 +111,7 @@ exports.temprc=function(storageFile, indexes){
             if(typeof db[id][i] !== "undefined")
                 if(typeof dbIndex[i][db[id][i]] !== "undefined")
                     delete dbIndex[i][db[id][i]];
-    }
+    };
     /*
      * @private
      */
@@ -110,22 +135,35 @@ exports.temprc=function(storageFile, indexes){
      * @private
      */
     let read = function(){
-        db = JSON.parse(fs.readFileSync(dbFile).toString());
+        db = JSON.parse(
+            fs.readFileSync(dbFile).toString()
+        );
     };
     /*
-     *@private
+     * @private
+     */
+    let saveAuto = async function(){
+        if(autoSave === true)
+            return save();
+        return false;
+    };
+    /*
+     * @private
      */
     let save = async function(){
         if(writing === true)
             return rewrite = true;
         writing = true;
-        fs.writeFileSync(dbFile, JSON.stringify(db));
+        fs.writeFileSync(
+            dbFile,
+            JSON.stringify(db)
+        );
         writing = false;
         if (rewrite === false )
             return true;
         rewrite = false;
         return save();
-    }
+    };
     /*
      * @private
      */
@@ -134,7 +172,10 @@ exports.temprc=function(storageFile, indexes){
      * @private
      */
     let rewrite = false;
-
+    /*
+     * @private
+     */
+    let autoSave = true;
     /*
      * @private
      */
@@ -163,7 +204,7 @@ exports.temprc=function(storageFile, indexes){
         indexEnable = true;
         for(let i of indexable)
             dbIndex[i] = {};
-    }
+    };
     try{
         read();
     }catch(e){};
