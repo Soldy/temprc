@@ -11,12 +11,14 @@ exports.temprc=function(storageFile, indexes){
         return save();
     };
     /*
+     * @param {string} name
+     * @param {string} value
      * @public
      * @var boolean
      */
     this.setup = function(name, value){
         if(
-            (name === 'autosave')&&
+            (name.toLowerCase() === 'autosave')&&
             (([true,false]).indexOf(value)>-1)
         ){
             autoSave = value;
@@ -113,7 +115,10 @@ exports.temprc=function(storageFile, indexes){
                     delete dbIndex[i][db[id][i]];
     };
     /*
+     * @param {string}- id
+     * @param {object}- container
      * @private
+     * @var boolean
      */
     let indexTo = function(id, container){
         if(indexEnable === false)
@@ -121,15 +126,18 @@ exports.temprc=function(storageFile, indexes){
         for(let i in container)
             if(indexable.indexOf(i) > -1)
                  dbIndex[i][db[id][i]]=id;
+        return true;
     };
     /*
      * @private
+     * @var boolean
      */
-    let indexAll = function(id, container){
+    let indexAll = function(){
         if(indexEnable === false)
             return false;
         for(let id in db)
             indexTo(id, db[id]);
+        return true;
     };
     /*
      * @private
