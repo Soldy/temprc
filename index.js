@@ -1,6 +1,5 @@
-const fs = require("fs");
-
-
+const fs = require('fs');
+const crypto = require('crypto');
 
 exports.temprc=function(storageFile, indexes){
     /*
@@ -24,6 +23,13 @@ exports.temprc=function(storageFile, indexes){
             autoSave = value;
             return true;
         };
+        if(
+            (name.toLowerCase() === 'hash')&&
+            (([true,false]).indexOf(value)>-1)
+        ){
+            hashCheck = value;
+            return true;
+        };
         return false;
     };
     /*
@@ -39,11 +45,25 @@ exports.temprc=function(storageFile, indexes){
      * @var mixed
      */
     this.get=function(id){
-        if(typeof id !== "string")
+        if(typeof id !== 'string')
             return false;
-        if(typeof db[id] === "undefined")
+        if(typeof db[id] === 'undefined')
             return undefined;
         return db[id];
+    };
+    /*
+     * @public
+     * @var string
+     */
+    this.hash=function(){
+        return hashCalculation();
+    };
+    /*
+     * @public
+     * @var string
+     */
+    this.hashCheck=function(){
+        return checkHash();
     };
     /*
      * @param {string} id
@@ -51,7 +71,7 @@ exports.temprc=function(storageFile, indexes){
      * @var boolean
      */
     this.del=function(id){
-        if(typeof id !== "string")
+        if(typeof id !== 'string')
             return false;
         delete db[id];
         saveAuto();
@@ -64,9 +84,9 @@ exports.temprc=function(storageFile, indexes){
      * @var  boolean
      */
     this.set=function(id, val){
-        if (typeof id !== "string")
+        if (typeof id !== 'string')
             return false;
-        if (typeof val === "underfined")
+        if (typeof val === 'underfined')
             return false;
         db[id] = val;
         saveAuto();
@@ -79,8 +99,8 @@ exports.temprc=function(storageFile, indexes){
      */
     this.check=function(id){
         if(
-            (typeof id !== "string") ||
-            (typeof db[id] !== "undefined")
+            (typeof id !== 'string') ||
+            (typeof db[id] !== 'undefined')
         )
             return true;
         return false;
@@ -110,8 +130,8 @@ exports.temprc=function(storageFile, indexes){
         if(indexEnable === false)
             return false;
         for(let i of indexable)
-            if(typeof db[id][i] !== "undefined")
-                if(typeof dbIndex[i][db[id][i]] !== "undefined")
+            if(typeof db[id][i] !== 'undefined')
+                if(typeof dbIndex[i][db[id][i]] !== 'undefined')
                     delete dbIndex[i][db[id][i]];
     };
     /*
@@ -141,11 +161,31 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @private
+     * @var boolean
      */
     let read = function(){
         db = JSON.parse(
             fs.readFileSync(dbFile).toString()
         );
+        if (hashCheck === true)
+            return checkHash();
+        return true;
+    };
+    /*
+     * @private
+     * @var boolean
+     */
+    let checkHash = function(){
+        readHash()
+        return (
+            hashCalculation() === hash
+        );
+    }
+    /*
+     * @private
+     */
+    let readHash = function(){
+        hash=fs.readFileSync(dbFile+'.hash').toString();
     };
     /*
      * @private
@@ -166,12 +206,34 @@ exports.temprc=function(storageFile, indexes){
             dbFile,
             JSON.stringify(db)
         );
+        if (hashCheck === true)
+            saveHash();
         writing = false;
         if (rewrite === false )
             return true;
         rewrite = false;
         return save();
     };
+    /*
+     * @private
+     */
+    let saveHash =  function(){
+        fs.writeFileSync(
+            dbFile+'.hash',
+            hashCalculation()
+        );
+    }
+    /*
+     * @private
+     */
+    let hashCalculation = function(){
+        return crypto.createHash('sha512')
+            .update(
+                JSON.stringify(db),
+                'utf8'
+            )
+            .digest('hex');
+    }
     /*
      * @private
      */
@@ -187,15 +249,23 @@ exports.temprc=function(storageFile, indexes){
     /*
      * @private
      */
+    let indexEnable = false;
+    /*
+     * @private
+     */
+    let hashCheck = true;
+    /*
+     * @private
+     */
+    let hash = '';
+    /*
+     * @private
+     */
     let db = {};
     /*
      * @private
      */
     let dbFile = storageFile;
-    /*
-     * @private
-     */
-    let indexEnable = false;
     /*
      * @private
      * @var object
