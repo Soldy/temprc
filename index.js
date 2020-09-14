@@ -22,14 +22,14 @@ exports.temprc=function(storageFile, indexes){
         ){
             autoSave = value;
             return true;
-        };
+        }
         if(
             (name.toLowerCase() === 'hash')&&
             (([true,false]).indexOf(value)>-1)
         ){
             hashCheck = value;
             return true;
-        };
+        }
         return false;
     };
     /*
@@ -38,7 +38,7 @@ exports.temprc=function(storageFile, indexes){
      */
     this.indexRefresh = function(){
 
-    }
+    };
     /*
      * @param {string} id
      * @public
@@ -49,6 +49,7 @@ exports.temprc=function(storageFile, indexes){
             return false;
         if(typeof db[id] === 'undefined')
             return undefined;
+        updateLastGet();
         return db[id];
     };
     /*
@@ -75,6 +76,7 @@ exports.temprc=function(storageFile, indexes){
             return false;
         delete db[id];
         saveAuto();
+        updateLastSet();
         return true;
     };
     /*
@@ -86,10 +88,11 @@ exports.temprc=function(storageFile, indexes){
     this.set=function(id, val){
         if (typeof id !== 'string')
             return false;
-        if (typeof val === 'underfined')
+        if (typeof val === 'undefined')
             return false;
         db[id] = val;
         saveAuto();
+        updateLastSet();
         return true;
     };
     /*
@@ -133,6 +136,7 @@ exports.temprc=function(storageFile, indexes){
             if(typeof db[id][i] !== 'undefined')
                 if(typeof dbIndex[i][db[id][i]] !== 'undefined')
                     delete dbIndex[i][db[id][i]];
+        updateLastSet();
     };
     /*
      * @param {string}- id
@@ -145,7 +149,8 @@ exports.temprc=function(storageFile, indexes){
             return false;
         for(let i in container)
             if(indexable.indexOf(i) > -1)
-                 dbIndex[i][db[id][i]]=id;
+                dbIndex[i][db[id][i]]=id;
+        updateLastSet();
         return true;
     };
     /*
@@ -157,6 +162,7 @@ exports.temprc=function(storageFile, indexes){
             return false;
         for(let id in db)
             indexTo(id, db[id]);
+        updateLastSet();
         return true;
     };
     /*
@@ -169,6 +175,7 @@ exports.temprc=function(storageFile, indexes){
         );
         if (hashCheck === true)
             return checkHash();
+        updateLastRead();
         return true;
     };
     /*
@@ -176,11 +183,11 @@ exports.temprc=function(storageFile, indexes){
      * @var boolean
      */
     let checkHash = function(){
-        readHash()
+        readHash();
         return (
             hashCalculation() === hash
         );
-    }
+    };
     /*
      * @private
      */
@@ -212,6 +219,7 @@ exports.temprc=function(storageFile, indexes){
         if (rewrite === false )
             return true;
         rewrite = false;
+        updateLastSave();
         return save();
     };
     /*
@@ -222,7 +230,7 @@ exports.temprc=function(storageFile, indexes){
             dbFile+'.hash',
             hashCalculation()
         );
-    }
+    };
     /*
      * @private
      */
@@ -233,7 +241,54 @@ exports.temprc=function(storageFile, indexes){
                 'utf8'
             )
             .digest('hex');
-    }
+    };
+    /*
+     * @private
+     * @var boolean
+     */
+    let updateLastGet = function (){
+        stats.lastSet = (+new Date);
+        return true;
+    };
+    /*
+     * @private
+     * @var boolean
+     */
+    let updateLastSet = function (){
+        stats.lastSet = (+new Date);
+        return true;
+    };
+    /*
+     * @private
+     * @var boolean
+     */
+    let updateLastSave = function (){
+        stats.lastSave = (+new Date);
+        return true;
+    };
+    /*
+     * @private
+     * @var boolean
+     */
+    let updateLastRead = function (){
+        stats.lastRead = (+new Date);
+        return true;
+    };
+    /*
+     * @private
+     * @var object
+     *
+     */
+    let stats = {
+        count:0,
+        bytes:0,
+        index:0,
+        start:(+new Date),
+        lastSet:(+new Date),
+        lastGet:(+new Date),
+        lastSave:(+new Date),
+        lastCount:(+new Date)
+    };
     /*
      * @private
      */
@@ -277,15 +332,15 @@ exports.temprc=function(storageFile, indexes){
      */
     let indexable = [];
     //costructor
-    if(typeof indexes !== "undefined"){
+    if(typeof indexes !== 'undefined'){
         indexable = indexes;
         indexEnable = true;
         for(let i of indexable)
             dbIndex[i] = {};
-    };
+    }
     try{
         read();
-    }catch(e){};
+    }catch(e){}
 };
 
 
