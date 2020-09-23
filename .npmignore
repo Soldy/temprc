@@ -19,3 +19,5 @@ jspm_packages/
 .jshintrc
 .travis.yml
 .gitattributes
+db.js
+db.js.hash
