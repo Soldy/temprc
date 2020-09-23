@@ -4,7 +4,7 @@ const crypto = require('crypto');
 exports.temprc=function(storageFile, indexes){
     /*
      * @public
-     * @var boolean
+     * @returns {boolean}
      */
     this.save = function(){
         return save();
@@ -13,7 +13,7 @@ exports.temprc=function(storageFile, indexes){
      * @param {string} name
      * @param {string} value
      * @public
-     * @var boolean
+     * @returns boolean
      */
     this.setup = function(name, value){
         if(
@@ -34,7 +34,7 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @public
-     * @var boolean
+     * @returns boolean
      */
     this.indexRefresh = function(){
 
@@ -42,7 +42,7 @@ exports.temprc=function(storageFile, indexes){
     /*
      * @param {string} id
      * @public
-     * @var mixed
+     * @returns mixed
      */
     this.get=function(id){
         if(typeof id !== 'string')
@@ -54,14 +54,14 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @public
-     * @var string
+     * @returns string
      */
     this.hash=function(){
         return hashCalculation();
     };
     /*
      * @public
-     * @var string
+     * @returns string
      */
     this.hashCheck=function(){
         return checkHash();
@@ -69,7 +69,7 @@ exports.temprc=function(storageFile, indexes){
     /*
      * @param {string} id
      * @public
-     * @var boolean
+     * @returns boolean
      */
     this.del=function(id){
         if(typeof id !== 'string')
@@ -83,7 +83,7 @@ exports.temprc=function(storageFile, indexes){
      * @param {string} id
      * @param {varius} val
      * @public
-     * @var  boolean
+     * @returns  boolean
      */
     this.set=function(id, val){
         if (typeof id !== 'string')
@@ -98,7 +98,7 @@ exports.temprc=function(storageFile, indexes){
     /*
      * @param {string}- id
      * @public
-     * @var boolean
+     * @returns boolean
      */
     this.check=function(id){
         if(
@@ -110,7 +110,7 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @public
-     * @var object 
+     * @returns object 
      */
     this.all=function(){
         return db;
@@ -118,7 +118,7 @@ exports.temprc=function(storageFile, indexes){
     /*
      *
      * @public
-     * @var array
+     * @returns array
      */
     this.list=function(){
         let out = [];
@@ -142,7 +142,7 @@ exports.temprc=function(storageFile, indexes){
      * @param {string}- id
      * @param {object}- container
      * @private
-     * @var boolean
+     * @returns boolean
      */
     let indexTo = function(id, container){
         if(indexEnable === false)
@@ -155,7 +155,7 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @private
-     * @var boolean
+     * @returns boolean
      */
     let indexAll = function(){
         if(indexEnable === false)
@@ -167,7 +167,7 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @private
-     * @var boolean
+     * @returns boolean
      */
     let read = function(){
         db = JSON.parse(
@@ -180,7 +180,7 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @private
-     * @var boolean
+     * @returns boolean
      */
     let checkHash = function(){
         readHash();
@@ -216,10 +216,10 @@ exports.temprc=function(storageFile, indexes){
         if (hashCheck === true)
             saveHash();
         writing = false;
+        updateLastSave();
         if (rewrite === false )
             return true;
         rewrite = false;
-        updateLastSave();
         return save();
     };
     /*
@@ -244,7 +244,7 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @private
-     * @var boolean
+     * @returns boolean
      */
     let updateLastGet = function (){
         stats.lastSet = (+new Date);
@@ -252,7 +252,7 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @private
-     * @var boolean
+     * @returns boolean
      */
     let updateLastSet = function (){
         stats.lastSet = (+new Date);
@@ -260,7 +260,7 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @private
-     * @var boolean
+     * @returns boolean
      */
     let updateLastSave = function (){
         stats.lastSave = (+new Date);
@@ -268,7 +268,7 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @private
-     * @var boolean
+     * @returns boolean
      */
     let updateLastRead = function (){
         stats.lastRead = (+new Date);
@@ -276,7 +276,7 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @private
-     * @var object
+     * @returns object
      *
      */
     let stats = {
