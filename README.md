@@ -3,7 +3,8 @@
 
 # temprc
 
-Simple temporally full block data storage for science calculation.
+Simple temporally full block data storage for scientific calculation.
+
 
 
 
@@ -42,7 +43,7 @@ Get variable :
 
 ```
 
-Check variable exist :
+Check variable existence :
 
 
 ``` javascript
@@ -68,7 +69,7 @@ Get all elements form the db:
     // out = object with all element
 ```
 
-Remove an element:
+Remove one element:
 
 ```javascript
 
