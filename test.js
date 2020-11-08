@@ -1,9 +1,19 @@
 const nanoTest  = new (require('nanoTest')).test();
 const temprc = new (require('./index.js')).temprc('db.js');
 
+nanoTest.add(
+    'check',
+    {
+        'function':temprc.size,
+        'options':['test1']
+    },
+    '===',
+    0
+);
+
 
 nanoTest.add(
-    'check test1 check',
+    'check',
     {
         'function':temprc.check,
         'options':['test1']
@@ -13,7 +23,7 @@ nanoTest.add(
 );
 
 nanoTest.add(
-    'test hash',
+    'hash',
     {
         'function':temprc.hash
     },
@@ -23,7 +33,7 @@ nanoTest.add(
 );
 
 nanoTest.add(
-    'test hash check',
+    'hash check',
     {
         'function':temprc.hashCheck
     },
@@ -33,7 +43,7 @@ nanoTest.add(
 
 
 nanoTest.add(
-    'check test1 set',
+    'set',
     {
         'function':temprc.set,
         'options':['test1', 'hopp']
@@ -43,7 +53,7 @@ nanoTest.add(
 );
 
 nanoTest.add(
-    'check test1 get',
+    'get',
     {
         'function':temprc.get,
         'options':['test1']
@@ -53,7 +63,7 @@ nanoTest.add(
 );
 
 nanoTest.add(
-    'check test1 list',
+    'list',
     {
         'function':temprc.list
     },
@@ -63,7 +73,7 @@ nanoTest.add(
 
 
 nanoTest.add(
-    'check test1 check ',
+    'check ',
     {
         'function':temprc.check,
         'options':['test1']
@@ -73,7 +83,7 @@ nanoTest.add(
 );
 
 nanoTest.add(
-    'check test1 del ',
+    'del ',
     {
         'function':temprc.del,
         'options':['test1']
@@ -83,7 +93,7 @@ nanoTest.add(
 );
 
 nanoTest.add(
-    'check test1 check ',
+    'check ',
     {
         'function':temprc.check,
         'options':['test1']

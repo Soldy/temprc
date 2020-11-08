@@ -128,6 +128,13 @@ exports.temprc=function(storageFile, indexes){
         return out;
     };
     /*
+     * @public
+     * @return integer
+     */
+    this.size=function(){
+        return count();
+    };
+    /*
      * @private
      */
     let indexClear = function(id){
