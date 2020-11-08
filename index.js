@@ -1,10 +1,11 @@
+'use strict';
 const fs = require('fs');
 const crypto = require('crypto');
 
 exports.temprc=function(storageFile, indexes){
     /*
      * @public
-     * @returns {boolean}
+     * @return {boolean}
      */
     this.save = function(){
         return save();
@@ -13,7 +14,7 @@ exports.temprc=function(storageFile, indexes){
      * @param {string} name
      * @param {string} value
      * @public
-     * @returns boolean
+     * @return {boolean}
      */
     this.setup = function(name, value){
         if(
@@ -34,7 +35,7 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @public
-     * @returns boolean
+     * @return {boolean}
      */
     this.indexRefresh = function(){
 
@@ -42,7 +43,7 @@ exports.temprc=function(storageFile, indexes){
     /*
      * @param {string} id
      * @public
-     * @returns mixed
+     * @return {mixed}
      */
     this.get=function(id){
         if(typeof id !== 'string')
@@ -54,14 +55,14 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @public
-     * @returns string
+     * @return {string}
      */
     this.hash=function(){
         return hashCalculation();
     };
     /*
      * @public
-     * @returns string
+     * @return {string}
      */
     this.hashCheck=function(){
         return checkHash();
@@ -69,7 +70,7 @@ exports.temprc=function(storageFile, indexes){
     /*
      * @param {string} id
      * @public
-     * @returns boolean
+     * @return {boolean}
      */
     this.del=function(id){
         if(typeof id !== 'string')
@@ -83,7 +84,7 @@ exports.temprc=function(storageFile, indexes){
      * @param {string} id
      * @param {varius} val
      * @public
-     * @returns  boolean
+     * @return  {boolean}
      */
     this.set=function(id, val){
         if (typeof id !== 'string')
@@ -98,7 +99,7 @@ exports.temprc=function(storageFile, indexes){
     /*
      * @param {string}- id
      * @public
-     * @returns boolean
+     * @return {boolean}
      */
     this.check=function(id){
         if(
@@ -110,7 +111,7 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @public
-     * @returns object 
+     * @return {object}
      */
     this.all=function(){
         return db;
@@ -118,7 +119,7 @@ exports.temprc=function(storageFile, indexes){
     /*
      *
      * @public
-     * @returns array
+     * @return {array}
      */
     this.list=function(){
         let out = [];
@@ -142,7 +143,7 @@ exports.temprc=function(storageFile, indexes){
      * @param {string}- id
      * @param {object}- container
      * @private
-     * @returns boolean
+     * @return {boolean}
      */
     let indexTo = function(id, container){
         if(indexEnable === false)
@@ -155,7 +156,7 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @private
-     * @returns boolean
+     * @return {boolean}
      */
     let indexAll = function(){
         if(indexEnable === false)
@@ -167,7 +168,7 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @private
-     * @returns boolean
+     * @return {boolean}
      */
     let read = function(){
         db = JSON.parse(
@@ -180,7 +181,7 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @private
-     * @returns boolean
+     * @return {boolean}
      */
     let checkHash = function(){
         readHash();
@@ -190,20 +191,23 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @private
+     * @return {void}
      */
     let readHash = function(){
         hash=fs.readFileSync(dbFile+'.hash').toString();
     };
     /*
      * @private
+     * @return {boolean}
      */
     let saveAuto = async function(){
         if(autoSave === true)
-            return save();
+            return await save();
         return false;
     };
     /*
      * @private
+     * @return {boolean}
      */
     let save = async function(){
         if(writing === true)
@@ -244,7 +248,7 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @private
-     * @returns boolean
+     * @return {boolean}
      */
     let updateLastGet = function (){
         stats.lastSet = (+new Date);
@@ -252,7 +256,7 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @private
-     * @returns boolean
+     * @return {boolean}
      */
     let updateLastSet = function (){
         stats.lastSet = (+new Date);
@@ -260,7 +264,7 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @private
-     * @returns boolean
+     * @return {boolean}
      */
     let updateLastSave = function (){
         stats.lastSave = (+new Date);
@@ -268,7 +272,7 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @private
-     * @returns boolean
+     * @return {boolean}
      */
     let updateLastRead = function (){
         stats.lastRead = (+new Date);
@@ -276,8 +280,7 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @private
-     * @returns object
-     *
+     * @var {dictonary}
      */
     let stats = {
         count:0,
@@ -291,26 +294,32 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @private
+     * @var {boolean}
      */
     let writing = false;
     /*
      * @private
+     * @var {boolean}
      */
     let rewrite = false;
     /*
      * @private
+     * @var {boolean}
      */
     let autoSave = true;
     /*
      * @private
+     * @var {boolean}
      */
     let indexEnable = false;
     /*
      * @private
+     * @var {boolean}
      */
     let hashCheck = true;
     /*
      * @private
+     * @var {boolean}
      */
     let hash = '';
     /*
@@ -319,16 +328,17 @@ exports.temprc=function(storageFile, indexes){
     let db = {};
     /*
      * @private
+     * @var {boolean}
      */
     let dbFile = storageFile;
     /*
      * @private
-     * @var object
+     * @var {dictonary}
      */
     let dbIndex = {};
     /*
      * @private
-     * @var array
+     * @var {array}
      */
     let indexable = [];
     //costructor
