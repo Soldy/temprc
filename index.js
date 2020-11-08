@@ -135,6 +135,15 @@ exports.temprc=function(storageFile, indexes){
         return count();
     };
     /*
+     * @public
+     * @return {boolean}
+     */
+    this.empty=function(){
+        if( 0 === parseInt(count()))
+             return true;
+        return false;
+    };
+    /*
      * @private
      */
     let indexClear = function(id){

@@ -2,14 +2,25 @@ const nanoTest  = new (require('nanoTest')).test();
 const temprc = new (require('./index.js')).temprc('db.js');
 
 nanoTest.add(
-    'check',
+    'size',
     {
         'function':temprc.size,
-        'options':['test1']
+        'options':[]
     },
     '===',
     0
 );
+
+nanoTest.add(
+    'empty',
+    {
+        'function':temprc.empty,
+        'options':[]
+    },
+    '===',
+    true
+);
+
 
 
 nanoTest.add(
@@ -51,6 +62,27 @@ nanoTest.add(
     '===',
     true
 );
+
+nanoTest.add(
+    'size',
+    {
+        'function':temprc.size,
+        'options':[]
+    },
+    '===',
+    1
+);
+
+nanoTest.add(
+    'empty',
+    {
+        'function':temprc.empty,
+        'options':[]
+    },
+    '===',
+    false
+);
+
 
 nanoTest.add(
     'get',
