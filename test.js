@@ -54,6 +54,16 @@ nanoTest.add(
 
 
 nanoTest.add(
+    'stats',
+    {
+        'function':temprc.stats
+    },
+    '!==',
+    false
+);
+
+
+nanoTest.add(
     'set',
     {
         'function':temprc.set,

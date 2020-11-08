@@ -144,6 +144,14 @@ exports.temprc=function(storageFile, indexes){
         return false;
     };
     /*
+     * @public
+     * @return {object}
+     */
+    this.stats=function(){
+        count();
+        return stats;
+    };
+    /*
      * @private
      */
     let indexClear = function(id){
