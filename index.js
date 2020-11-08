@@ -181,6 +181,25 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @private
+     * @return {integer}
+     */
+    let count = function (){
+        if(stats.lastCount > stats.lastSet)
+            return stats.count;
+        let out = 0;
+        let index = 0;
+        for(let i in db){
+            out++;
+            index+=i.length;
+        }
+        stats.count     = out;
+        stats.index     = index;
+        stats.bytes     = JSON.stringify(db).toString().length;
+        stats.lastCount = (+new Date);
+        return out;
+    };
+    /*
+     * @private
      * @return {boolean}
      */
     let checkHash = function(){
