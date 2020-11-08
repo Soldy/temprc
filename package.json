@@ -1,6 +1,6 @@
 {
   "name": "temprc",
-  "version": "0.9.9-alpha",
+  "version": "0.9.9-alpha2",
   "description": "temp db manager",
   "main": "index.js",
   "scripts": {
@@ -18,7 +18,6 @@
   },
   "homepage": "https://github.com/Soldy/temprc#readme",
   "devDependencies": {
-    "eslint": "^7.9.0",
     "interactiveConsole": "0.0.7-alpha0",
     "nanoTest": "^0.9.9-alpha-5"
   }
