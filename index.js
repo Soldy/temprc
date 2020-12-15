@@ -2,6 +2,12 @@
 const fs = require('fs');
 const crypto = require('crypto');
 
+/*
+ * @param {string} storage file or directory or binary allocation
+ * @param {array} indexes
+ * @prototype
+ */
+ 
 exports.temprc=function(storageFile, indexes){
     /*
      * @public
@@ -113,8 +119,18 @@ exports.temprc=function(storageFile, indexes){
      * @public
      * @return {object}
      */
-    this.all=function(){
+    this.full=function(){
         return db;
+    };
+    /*
+     * @public
+     * @return {object}
+     */
+    this.all=function(){
+        let list = [];
+        for (let i in db)
+            list.push(db[i]);
+        return list;
     };
     /*
      *
@@ -151,6 +167,15 @@ exports.temprc=function(storageFile, indexes){
         count();
         return stats;
     };
+    /*
+     * @param {object}
+     * @public
+     * @return {boolean}
+     */
+    this.importing = function(importDb){
+        db = importDb;
+        return true;
+    }
     /*
      * @private
      */
