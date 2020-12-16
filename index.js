@@ -8,7 +8,7 @@ const crypto = require('crypto');
  * @prototype
  */
  
-exports.temprc=function(storageFile, indexes){
+exports.temprc=function(storageFD, indexes){
     /*
      * @public
      * @return {boolean}
@@ -221,7 +221,7 @@ exports.temprc=function(storageFile, indexes){
      */
     let read = function(){
         db = JSON.parse(
-            fs.readFileSync(dbFile).toString()
+            fs.readFileSync(dbFD).toString()
         );
         if (hashCheck === true)
             return checkHash();
@@ -253,7 +253,7 @@ exports.temprc=function(storageFile, indexes){
      */
     let checkHash = function(){
         readHash();
-        return (
+         (
             hashCalculation() === hash
         );
     };
@@ -262,7 +262,7 @@ exports.temprc=function(storageFile, indexes){
      * @return {void}
      */
     let readHash = function(){
-        hash=fs.readFileSync(dbFile+'.hash').toString();
+        hash=fs.readFileSync(dbFD+'.hash').toString();
     };
     /*
      * @private
@@ -277,12 +277,26 @@ exports.temprc=function(storageFile, indexes){
      * @private
      * @return {boolean}
      */
-    let save = async function(){
+    const save = async function(){
+        if(writingWait === true)
+            return true;
+        writingProcess = setTimeout(
+            saveDo,
+            delayedSave
+        );
+        writingWait = true;
+    }
+    /*
+     * @private
+     * @return {boolean}
+     */
+    let saveDo = async function(){
+        writingWait = false
         if(writing === true)
             return rewrite = true;
         writing = true;
         fs.writeFileSync(
-            dbFile,
+            dbFD,
             JSON.stringify(db)
         );
         if (hashCheck === true)
@@ -299,7 +313,7 @@ exports.temprc=function(storageFile, indexes){
      */
     let saveHash =  function(){
         fs.writeFileSync(
-            dbFile+'.hash',
+            dbFD+'.hash',
             hashCalculation()
         );
     };
@@ -362,6 +376,16 @@ exports.temprc=function(storageFile, indexes){
     };
     /*
      * @private
+     * @var {timeout}
+    */
+    let writingProcess;
+    /*
+     * @private
+     * @var {boolean}
+     */
+    let writingWait = false ;
+    /*
+     * @private
      * @var {boolean}
      */
     let writing = false;
@@ -375,6 +399,11 @@ exports.temprc=function(storageFile, indexes){
      * @var {boolean}
      */
     let autoSave = true;
+    /*
+     * @private
+     * @var {boolean}
+     */
+    let delayedSave = 500;
     /*
      * @private
      * @var {boolean}
@@ -398,7 +427,7 @@ exports.temprc=function(storageFile, indexes){
      * @private
      * @var {boolean}
      */
-    let dbFile = storageFile;
+    let dbFD = storageFD;
     /*
      * @private
      * @var {dictonary}
