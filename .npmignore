@@ -21,6 +21,7 @@ bower_components
 .lock-wscript
 build/Release
 
+.github/workflows/node.js.yml
 node_modules/
 jspm_packages/
 typings/
