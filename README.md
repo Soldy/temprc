@@ -28,7 +28,7 @@ Set variable :
 
 ``` javascript
     
-    temprc.set(name, value);
+    temprc.set(name, data);
 
 ```
 
