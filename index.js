@@ -1,6 +1,7 @@
 'use strict';
 const fs = require('fs');
 const crypto = require('crypto');
+const setupBase = (require('setuprc')).setupBase;
 
 /*
  * @param {string} storage file or directory or binary allocation
@@ -8,7 +9,7 @@ const crypto = require('crypto');
  * @prototype
  */
  
-exports.temprc=function(storageFD, indexes){
+exports.temprc=function(storageFD, settings, indexes){
     /*
      * @public
      * @return {boolean}
@@ -17,27 +18,11 @@ exports.temprc=function(storageFD, indexes){
         return save();
     };
     /*
-     * @param {string} name
-     * @param {string} value
      * @public
-     * @return {boolean}
+     * @return {object} setup
      */
-    this.setup = function(name, value){
-        if(
-            (name.toLowerCase() === 'autosave')&&
-            (([true,false]).indexOf(value)>-1)
-        ){
-            autoSave = value;
-            return true;
-        }
-        if(
-            (name.toLowerCase() === 'hash')&&
-            (([true,false]).indexOf(value)>-1)
-        ){
-            hashCheck = value;
-            return true;
-        }
-        return false;
+    this.setup = function(){
+        return setup;
     };
     /*
      * @public
@@ -180,7 +165,7 @@ exports.temprc=function(storageFD, indexes){
      * @private
      */
     let indexClear = function(id){
-        if(indexEnable === false)
+        if(setup.get('indexEnable') === false)
             return false;
         for(let i of indexable)
             if(typeof db[id][i] !== 'undefined')
@@ -195,7 +180,7 @@ exports.temprc=function(storageFD, indexes){
      * @return {boolean}
      */
     let indexTo = function(id, container){
-        if(indexEnable === false)
+        if(setup.get('indexEnable') === false)
             return false;
         for(let i in container)
             if(indexable.indexOf(i) > -1)
@@ -208,7 +193,7 @@ exports.temprc=function(storageFD, indexes){
      * @return {boolean}
      */
     let indexAll = function(){
-        if(indexEnable === false)
+        if(setup.get('indexEnable') === false)
             return false;
         for(let id in db)
             indexTo(id, db[id]);
@@ -223,7 +208,7 @@ exports.temprc=function(storageFD, indexes){
         db = JSON.parse(
             fs.readFileSync(dbFD).toString()
         );
-        if (hashCheck === true)
+        if (setup.get('hashCheck') === true)
             return checkHash();
         updateLastRead();
         return true;
@@ -269,7 +254,7 @@ exports.temprc=function(storageFD, indexes){
      * @return {boolean}
      */
     let saveAuto = async function(){
-        if(autoSave === true)
+        if(setup.get('autoSave') === true)
             return await save();
         return false;
     };
@@ -282,7 +267,7 @@ exports.temprc=function(storageFD, indexes){
             return true;
         writingProcess = setTimeout(
             saveDo,
-            delayedSave
+            setup.get('delayedSave')
         );
         writingWait = true;
     }
@@ -299,7 +284,7 @@ exports.temprc=function(storageFD, indexes){
             dbFD,
             JSON.stringify(db)
         );
-        if (hashCheck === true)
+        if (setup.get('hashCheck') === true)
             saveHash();
         writing = false;
         updateLastSave();
@@ -395,25 +380,27 @@ exports.temprc=function(storageFD, indexes){
      */
     let rewrite = false;
     /*
+     * setup  helper
      * @private
-     * @var {boolean}
      */
-    let autoSave = true;
-    /*
-     * @private
-     * @var {boolean}
-     */
-    let delayedSave = 500;
-    /*
-     * @private
-     * @var {boolean}
-     */
-    let indexEnable = false;
-    /*
-     * @private
-     * @var {boolean}
-     */
-    let hashCheck = true;
+    let setup = new setupBase({
+        'autoSave':{
+            'type'    : 'bool',
+            'default' : true
+        },
+        'indexEnable':{
+            'type'    : 'bool',
+            'default' : true
+        },
+        'hashCheck':{
+            'type'    : 'bool',
+            'default' : true
+        },
+        'delayedSave':{
+            'type'    : 'int',
+            'default' : 500
+        }
+    });
     /*
      * @private
      * @var {boolean}
@@ -439,12 +426,15 @@ exports.temprc=function(storageFD, indexes){
      */
     let indexable = [];
     //costructor
+    if(typeof settings !== 'undefined')
+        setup.setup(settings);
     if(typeof indexes !== 'undefined'){
         indexable = indexes;
-        indexEnable = true;
+        setup.set('indexEnable',  true);
         for(let i of indexable)
             dbIndex[i] = {};
     }
+
     try{
         read();
     }catch(e){}
