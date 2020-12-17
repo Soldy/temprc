@@ -1,7 +1,6 @@
 'use strict';
 const fs = require('fs');
 const crypto = require('crypto');
-const setupBase = (require('setuprc')).setupBase;
 
 /*
  * @param {string} storage file or directory or binary allocation
@@ -9,7 +8,7 @@ const setupBase = (require('setuprc')).setupBase;
  * @prototype
  */
  
-exports.temprc=function(storageFD, settings, indexes){
+exports.temprc=function(storageFD, setIn, indexes){
     /*
      * @public
      * @return {boolean}
@@ -383,24 +382,7 @@ exports.temprc=function(storageFD, settings, indexes){
      * setup  helper
      * @private
      */
-    let setup = new setupBase({
-        'autoSave':{
-            'type'    : 'bool',
-            'default' : true
-        },
-        'indexEnable':{
-            'type'    : 'bool',
-            'default' : true
-        },
-        'hashCheck':{
-            'type'    : 'bool',
-            'default' : true
-        },
-        'delayedSave':{
-            'type'    : 'int',
-            'default' : 500
-        }
-    });
+    let setup = setIn;
     /*
      * @private
      * @var {boolean}
@@ -426,8 +408,6 @@ exports.temprc=function(storageFD, settings, indexes){
      */
     let indexable = [];
     //costructor
-    if(typeof settings !== 'undefined')
-        setup.setup(settings);
     if(typeof indexes !== 'undefined'){
         indexable = indexes;
         setup.set('indexEnable',  true);
