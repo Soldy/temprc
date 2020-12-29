@@ -140,7 +140,7 @@ exports.temprc=function(storageFD, setIn, indexes){
      */
     this.empty=function(){
         if( 0 === parseInt(count()))
-             return true;
+            return true;
         return false;
     };
     /*
@@ -159,7 +159,7 @@ exports.temprc=function(storageFD, setIn, indexes){
     this.importing = function(importDb){
         db = importDb;
         return true;
-    }
+    };
     /*
      * @private
      */
@@ -237,7 +237,7 @@ exports.temprc=function(storageFD, setIn, indexes){
      */
     let checkHash = function(){
         readHash();
-         (
+        (
             hashCalculation() === hash
         );
     };
@@ -269,13 +269,13 @@ exports.temprc=function(storageFD, setIn, indexes){
             setup.get('delayedSave')
         );
         writingWait = true;
-    }
+    };
     /*
      * @private
      * @return {boolean}
      */
     let saveDo = async function(){
-        writingWait = false
+        writingWait = false;
         if(writing === true)
             return rewrite = true;
         writing = true;
