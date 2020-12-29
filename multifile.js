@@ -120,7 +120,7 @@ const multiFile = function(storageFD, indexes){
      */
     this.empty=function(){
         if( 0 === parseInt(count()))
-             return true;
+            return true;
         return false;
     };
     /*
@@ -139,7 +139,7 @@ const multiFile = function(storageFD, indexes){
     this.importing = function(importDb){
         db = importDb;
         return true;
-    }
+    };
     /*
      * @private
      * @var {dictonary}
@@ -197,14 +197,14 @@ const multiFile = function(storageFD, indexes){
     
     const get = function(i){
 
-    }
+    };
 
-    const set = sync function(i, v){
+    const set = async function(i, v){
 
-    }
+    };
     const count = function (){
 
-    }
+    };
     /*
      * @private
      * @return {boolean}
@@ -218,12 +218,12 @@ const multiFile = function(storageFD, indexes){
      * @private
      */
     const mkDb = function(){
-         fs.mkdirSync(dbFD);
-         try{
+        fs.mkdirSync(dbFD);
+        try{
 
-         }catch(e){
-             fs.readFileSync(dbFD).toString()
-         };
-    }
+        }catch(e){
+            fs.readFileSync(dbFD).toString();
+        }
+    };
 
-}
+};
