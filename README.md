@@ -27,7 +27,6 @@ Set variable :
 
 
 ``` javascript
-    
     temprc.set(name, data);
 
 ```
@@ -37,7 +36,6 @@ Get variable :
 
 
 ``` javascript
-    
     let out = temprc.get(name);
     // out = value
 
@@ -47,7 +45,6 @@ Check variable existence :
 
 
 ``` javascript
-    
     let out = temprc.check(name);
     // out = true or false (boolean)
 
@@ -73,35 +70,31 @@ Remove one element:
 
 ```javascript
 
-   let out = temprc.del(name);
+   temprc.del(name);
    // out = true or false (boolean)
-   
 ```
 
 Force data save 
 
 ```javascript
 
-   let out = temprc.save();
-   
+   temprc.save();
 ```
 
 Setup autosave (enable/disable)
 
 ```javascript
 
-   let out = temprc.setup('autosave', true or false);
+   temprc.setup('autosave', true || false);
    // default is : true
-   
 ```
 
 Setup hash (enable/disable)
 
 ```javascript
 
-   let out = temprc.setup('hash', true or false);
+   temprc.setup('hash', true || false);
    // default is : true
-   
 ```
 
 
