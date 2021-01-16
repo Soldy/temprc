@@ -1,8 +1,17 @@
+/*
+ *  @Soldy\temprc\multi\2021.01.16\GPL3
+ */
 'use strict';
 const fs = require('fs');
 const crypto = require('crypto');
 
-const multiFile = function(storageFD, indexes){
+/*
+ * @param {string} storageFD //storage directory
+ * @param {setuprc} settings
+ * @param {array} indexes
+ * @prototype
+ */
+const multiFile = function(storageFD, setIn, indexes){
     /*
      * @public
      * @return {boolean}

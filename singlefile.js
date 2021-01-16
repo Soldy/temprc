@@ -1,13 +1,16 @@
+/*
+ *  @Soldy\temprc\single\2021.01.16\GPL3
+ */
 'use strict';
 const fs = require('fs');
 const crypto = require('crypto');
 
 /*
  * @param {string} storage file or directory or binary allocation
+ * @param {setuprc} setIn
  * @param {array} indexes
  * @prototype
  */
- 
 exports.temprc=function(storageFD, setIn, indexes){
     /*
      * @public
@@ -163,7 +166,7 @@ exports.temprc=function(storageFD, setIn, indexes){
     /*
      * @private
      */
-    let indexClear = function(id){
+    const indexClear = function(id){
         if(setup.get('indexEnable') === false)
             return false;
         for(let i of indexable)
@@ -178,7 +181,7 @@ exports.temprc=function(storageFD, setIn, indexes){
      * @private
      * @return {boolean}
      */
-    let indexTo = function(id, container){
+    const indexTo = function(id, container){
         if(setup.get('indexEnable') === false)
             return false;
         for(let i in container)
@@ -191,7 +194,7 @@ exports.temprc=function(storageFD, setIn, indexes){
      * @private
      * @return {boolean}
      */
-    let indexAll = function(){
+    const indexAll = function(){
         if(setup.get('indexEnable') === false)
             return false;
         for(let id in db)
@@ -203,7 +206,7 @@ exports.temprc=function(storageFD, setIn, indexes){
      * @private
      * @return {boolean}
      */
-    let read = function(){
+    const read = function(){
         db = JSON.parse(
             fs.readFileSync(dbFD).toString()
         );
@@ -216,7 +219,7 @@ exports.temprc=function(storageFD, setIn, indexes){
      * @private
      * @return {integer}
      */
-    let count = function (){
+    const count = function (){
         if(stats.lastCount > stats.lastSet)
             return stats.count;
         let out = 0;
@@ -235,7 +238,7 @@ exports.temprc=function(storageFD, setIn, indexes){
      * @private
      * @return {boolean}
      */
-    let checkHash = function(){
+    const checkHash = function(){
         readHash();
         (
             hashCalculation() === hash
@@ -245,14 +248,14 @@ exports.temprc=function(storageFD, setIn, indexes){
      * @private
      * @return {void}
      */
-    let readHash = function(){
+    const readHash = function(){
         hash=fs.readFileSync(dbFD+'.hash').toString();
     };
     /*
      * @private
      * @return {boolean}
      */
-    let saveAuto = async function(){
+    const saveAuto = async function(){
         if(setup.get('autoSave') === true)
             return await save();
         return false;
@@ -263,21 +266,25 @@ exports.temprc=function(storageFD, setIn, indexes){
      */
     const save = async function(){
         if(writingWait === true)
-            return true;
+            return false;
+        if(writingProcess !== false)
+            return clearTimeout(writingProcess);
         writingProcess = setTimeout(
             saveDo,
             setup.get('delayedSave')
         );
         writingWait = true;
+        return true;
     };
     /*
      * @private
      * @return {boolean}
      */
-    let saveDo = async function(){
+    const saveDo = async function(){
         writingWait = false;
         if(writing === true)
             return rewrite = true;
+        writingProcess = false;
         writing = true;
         fs.writeFileSync(
             dbFD,
@@ -295,7 +302,7 @@ exports.temprc=function(storageFD, setIn, indexes){
     /*
      * @private
      */
-    let saveHash =  function(){
+    const saveHash =  function(){
         fs.writeFileSync(
             dbFD+'.hash',
             hashCalculation()
@@ -304,7 +311,7 @@ exports.temprc=function(storageFD, setIn, indexes){
     /*
      * @private
      */
-    let hashCalculation = function(){
+    const hashCalculation = function(){
         return crypto.createHash('sha512')
             .update(
                 JSON.stringify(db),
@@ -316,7 +323,7 @@ exports.temprc=function(storageFD, setIn, indexes){
      * @private
      * @return {boolean}
      */
-    let updateLastGet = function (){
+    const updateLastGet = function (){
         stats.lastSet = (+new Date);
         return true;
     };
@@ -324,7 +331,7 @@ exports.temprc=function(storageFD, setIn, indexes){
      * @private
      * @return {boolean}
      */
-    let updateLastSet = function (){
+    const updateLastSet = function (){
         stats.lastSet = (+new Date);
         return true;
     };
@@ -332,7 +339,7 @@ exports.temprc=function(storageFD, setIn, indexes){
      * @private
      * @return {boolean}
      */
-    let updateLastSave = function (){
+    const updateLastSave = function (){
         stats.lastSave = (+new Date);
         return true;
     };
@@ -340,7 +347,7 @@ exports.temprc=function(storageFD, setIn, indexes){
      * @private
      * @return {boolean}
      */
-    let updateLastRead = function (){
+    const updateLastRead = function (){
         stats.lastRead = (+new Date);
         return true;
     };
@@ -362,7 +369,7 @@ exports.temprc=function(storageFD, setIn, indexes){
      * @private
      * @var {timeout}
     */
-    let writingProcess;
+    let writingProcess = false;
     /*
      * @private
      * @var {boolean}
@@ -407,7 +414,7 @@ exports.temprc=function(storageFD, setIn, indexes){
      * @var {array}
      */
     let indexable = [];
-    //costructor
+    //constructor
     if(typeof indexes !== 'undefined'){
         indexable = indexes;
         setup.set('indexEnable',  true);
@@ -417,7 +424,9 @@ exports.temprc=function(storageFD, setIn, indexes){
 
     try{
         read();
-    }catch(e){}
+    }catch(e){
+        save();
+    }
 };
 
 

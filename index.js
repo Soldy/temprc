@@ -1,9 +1,16 @@
-
+/*
+ *  @Soldy\temprc\2021.01.16\GPL3
+ */
 'use strict';
 const setupBase = (require('setuprc')).setupBase;
 
 
-
+/*
+ * @param {string} storageFD
+ * @param {setuprc} settings
+ * @param {array} indexes
+ * @prototype
+ */
 exports.temprc=function(storageFD, settings, indexes){
     /*
      * @public
