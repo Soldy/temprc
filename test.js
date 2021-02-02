@@ -1,5 +1,5 @@
 const nanoTest  = new (require('nanoTest')).test();
-const temprc = new (require('./index.js')).temprc('db.js');
+const temprc = new (require('./index.js')).base('db.js');
 
 nanoTest.add(
     'size',

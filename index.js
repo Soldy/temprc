@@ -2,7 +2,7 @@
  *  @Soldy\temprc\2021.01.16\GPL3
  */
 'use strict';
-const setupBase = (require('setuprc')).setupBase;
+const setupBase = (require('setuprc')).base;
 
 
 /*
@@ -11,7 +11,7 @@ const setupBase = (require('setuprc')).setupBase;
  * @param {array} indexes
  * @prototype
  */
-exports.temprc=function(storageFD, settings, indexes){
+const temprcBase = function(storageFD, settings, indexes){
     /*
      * @public
      * @return {boolean}
@@ -208,8 +208,10 @@ exports.temprc=function(storageFD, settings, indexes){
             return true;
         }
     };
+    // constructor
     if(typeof settings !== 'undefined')
         setup.setup(settings);
     init();
 };
 
+exports.base = temprcBase;

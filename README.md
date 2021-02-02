@@ -11,7 +11,7 @@ Simple temporally full block data storage for scientific calculation.
 Example:
 
 ``` javascript
-    const temprc = new (require('temprc')).temprc('tempdb');
+    const temprc = new (require('temprc')).base('tempdb');
 
     temprc.set('variable', {'test':'test string'});
 
