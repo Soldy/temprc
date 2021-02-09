@@ -11,7 +11,7 @@ const crypto = require('crypto');
  * @param {array} indexes
  * @prototype
  */
-exports.temprc=function(storageFD, setIn, indexes){
+const singleFileBase=function(storageFD, setIn, indexes){
     /*
      * @public
      * @return {boolean}
@@ -240,7 +240,7 @@ exports.temprc=function(storageFD, setIn, indexes){
      */
     const checkHash = function(){
         readHash();
-        (
+        return (
             hashCalculation() === hash
         );
     };
@@ -430,3 +430,4 @@ exports.temprc=function(storageFD, setIn, indexes){
 };
 
 
+exports.base = singleFileBase;
