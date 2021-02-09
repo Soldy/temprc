@@ -3,6 +3,8 @@
  */
 'use strict';
 const setupBase = (require('setuprc')).base;
+const singleFile = (require('./singlefile.js')).base;
+const multiFile = (require('./multifile.js')).base;
 
 
 /*
@@ -42,7 +44,7 @@ const temprcBase = function(storageFD, settings, indexes){
      */
     this.get=function(id, stor){
         stor = storCheck(stor);
-        return manager[stor].get();
+        return manager[stor].get(id);
     };
     /*
      * @public
@@ -67,7 +69,7 @@ const temprcBase = function(storageFD, settings, indexes){
      */
     this.del=function(id, stor){
         stor = storCheck(stor);
-        return manager[stor].del();
+        return manager[stor].del(id);
     };
     /*
      * @param {string} id
@@ -77,7 +79,7 @@ const temprcBase = function(storageFD, settings, indexes){
      */
     this.set=function(id, val, stor){
         stor = storCheck(stor);
-        return manager[stor].set();
+        return manager[stor].set(id, val);
     };
     /*
      * @param {string}- id
@@ -86,7 +88,7 @@ const temprcBase = function(storageFD, settings, indexes){
      */
     this.check=function(id, stor){
         stor = storCheck(stor);
-        manager[stor].check();
+        return manager[stor].check(id);
     };
     /*
      * @public
@@ -94,7 +96,7 @@ const temprcBase = function(storageFD, settings, indexes){
      */
     this.full=function(stor){
         stor = storCheck(stor);
-        manager[stor].full();
+        return manager[stor].full();
     };
     /*
      * @public
@@ -102,7 +104,7 @@ const temprcBase = function(storageFD, settings, indexes){
      */
     this.all=function(stor){
         stor = storCheck(stor);
-        manager[stor].all();
+        return manager[stor].all();
     };
     /*
      *
@@ -111,7 +113,7 @@ const temprcBase = function(storageFD, settings, indexes){
      */
     this.list=function(stor){
         stor = storCheck(stor);
-        manager[stor].list();
+        return  manager[stor].list();
     };
     /*
      * @public
@@ -127,7 +129,7 @@ const temprcBase = function(storageFD, settings, indexes){
      */
     this.empty=function(stor){
         stor = storCheck(stor);
-        manager[stor].empty();
+        return manager[stor].empty();
     };
     /*
      * @public
@@ -135,7 +137,7 @@ const temprcBase = function(storageFD, settings, indexes){
      */
     this.stats=function(stor){
         stor = storCheck(stor);
-        manager[stor].stats();
+        return manager[stor].stats();
     };
     /*
      * @param {object}
@@ -144,7 +146,7 @@ const temprcBase = function(storageFD, settings, indexes){
      */
     this.importing = function(importDb, stor){
         stor = storCheck(stor);
-        manager[stor].importing();
+        return manager[stor].importing();
     };
     let manager = {};
     /*
@@ -193,14 +195,14 @@ const temprcBase = function(storageFD, settings, indexes){
     const init = function(){
         if(typeof storageFD === 'string'){
             if(setup.get('databbaseType') === 'multi'){
-                manager['default'] = new (require('./multifile')).temprc(
+                manager['default'] = new multiFile(
                     storageFD,
                     setup,
                     indexes
                 );
                 return true;
             }
-            manager['default'] = new (require('./singlefile')).temprc(
+                manager['default'] = new singleFile(
                 storageFD,
                 setup,
                 indexes
