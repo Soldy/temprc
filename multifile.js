@@ -11,7 +11,7 @@ const crypto = require('crypto');
  * @param {array} indexes
  * @prototype
  */
-const multiFile = function(storageFD, setIn, indexes){
+const multiFileBase = function(storageFD, setIn, indexes){
     /*
      * @public
      * @return {boolean}
@@ -205,11 +205,20 @@ const multiFile = function(storageFD, setIn, indexes){
     let justCache = [];
     
     const get = function(i){
-
+         fs.readFileSync(
+             dbFD+
+             '/'+
+             i
+         );
     };
 
     const set = async function(i, v){
-
+        fs.writeFileSync(
+             dbFD+
+             '/'+
+             i,
+             JSON.stringify(db)
+        );
     };
     const count = function (){
 
@@ -227,12 +236,12 @@ const multiFile = function(storageFD, setIn, indexes){
      * @private
      */
     const mkDb = function(){
-        fs.mkdirSync(dbFD);
-        try{
-
-        }catch(e){
-            fs.readFileSync(dbFD).toString();
-        }
+        const stat = fs.statiSync(dbFD);
+        if (typeof stat === 'undefined')
+            fs.mkdirSync(dbFD);
+        fs.readdirSync(dbFD);
     };
 
 };
+
+exports.base = multiFileBase;
