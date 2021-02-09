@@ -11,21 +11,14 @@
     "url": "https://github.com/Soldy/temprc.git"
   },
   "keywords": [],
-  "author": "Soldy",
-  "license": "GPLv3",
+  "author": "Soldy <npmjs@gidigi.com> (http://gidigi.com)",
+  "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/Soldy/temprc/issues"
   },
   "homepage": "https://github.com/Soldy/temprc#readme",
   "devDependencies": {
-    "assertrc": "^1.0.2-rc2",
-    "consolebarrc": "0.0.2-rc3",
-    "consolestdiorc": "0.0.4",
-    "consolestylerc": "0.0.4",
-    "nano-test-output-cli": "^0.9.9-beta17",
-    "nanoTest": "^0.9.9-beta15",
-    "sandboxrc": "^0.9.9-beta15",
-    "typehardeningrc": "^0.9.9-beta15"
+    "nanoTest": "^0.9.9-beta15"
   },
   "dependencies": {
     "setuprc": "^0.9.9-beta16"
