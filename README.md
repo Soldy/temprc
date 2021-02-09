@@ -1,6 +1,3 @@
-![alt tag](https://travis-ci.com/Soldy/temprc.svg?branch=master)
-
-
 # temprc
 
 Simple temporally full block data storage for scientific calculation.
