@@ -17,14 +17,14 @@ const singleFileBase=function(storageFD, setIn, indexes){
      * @return {boolean}
      */
     this.save = function(){
-        return save();
+        return _save();
     };
     /*
      * @public
      * @return {object} setup
      */
     this.setup = function(){
-        return setup;
+        return _setup;
     };
     /*
      * @public
@@ -41,24 +41,24 @@ const singleFileBase=function(storageFD, setIn, indexes){
     this.get=function(id){
         if(typeof id !== 'string')
             return false;
-        if(typeof db[id] === 'undefined')
+        if(typeof _db[id] === 'undefined')
             return undefined;
-        updateLastGet();
-        return db[id];
+        _updateLastGet();
+        return _db[id];
     };
     /*
      * @public
      * @return {string}
      */
     this.hash=function(){
-        return hashCalculation();
+        return _hashCalculation();
     };
     /*
      * @public
      * @return {string}
      */
     this.hashCheck=function(){
-        return checkHash();
+        return _checkHash();
     };
     /*
      * @param {string} id
@@ -68,9 +68,9 @@ const singleFileBase=function(storageFD, setIn, indexes){
     this.del=function(id){
         if(typeof id !== 'string')
             return false;
-        delete db[id];
-        saveAuto();
-        updateLastSet();
+        delete _db[id];
+        _saveAuto();
+        _updateLastSet();
         return true;
     };
     /*
@@ -84,9 +84,9 @@ const singleFileBase=function(storageFD, setIn, indexes){
             return false;
         if (typeof val === 'undefined')
             return false;
-        db[id] = val;
-        saveAuto();
-        updateLastSet();
+        _db[id] = val;
+        _saveAuto();
+        _updateLastSet();
         return true;
     };
     /*
@@ -97,7 +97,7 @@ const singleFileBase=function(storageFD, setIn, indexes){
     this.check=function(id){
         if(
             (typeof id !== 'string') ||
-            (typeof db[id] !== 'undefined')
+            (typeof _db[id] !== 'undefined')
         )
             return true;
         return false;
@@ -107,7 +107,7 @@ const singleFileBase=function(storageFD, setIn, indexes){
      * @return {object}
      */
     this.full=function(){
-        return db;
+        return _db;
     };
     /*
      * @public
@@ -115,8 +115,8 @@ const singleFileBase=function(storageFD, setIn, indexes){
      */
     this.all=function(){
         let list = [];
-        for (let i in db)
-            list.push(db[i]);
+        for (let i in _db)
+            list.push(_db[i]);
         return list;
     };
     /*
@@ -126,7 +126,7 @@ const singleFileBase=function(storageFD, setIn, indexes){
      */
     this.list=function(){
         let out = [];
-        for(let i in  db)
+        for(let i in  _db)
             out.push(i);
         return out;
     };
@@ -135,14 +135,14 @@ const singleFileBase=function(storageFD, setIn, indexes){
      * @return integer
      */
     this.size=function(){
-        return count();
+        return _count();
     };
     /*
      * @public
      * @return {boolean}
      */
     this.empty=function(){
-        if( 0 === parseInt(count()))
+        if( 0 === parseInt(_count()))
             return true;
         return false;
     };
@@ -151,8 +151,8 @@ const singleFileBase=function(storageFD, setIn, indexes){
      * @return {object}
      */
     this.stats=function(){
-        count();
-        return stats;
+        _count();
+        return _stats;
     };
     /*
      * @param {object}
@@ -160,20 +160,20 @@ const singleFileBase=function(storageFD, setIn, indexes){
      * @return {boolean}
      */
     this.importing = function(importDb){
-        db = importDb;
+        _db = importDb;
         return true;
     };
     /*
      * @private
      */
     const indexClear = function(id){
-        if(setup.get('indexEnable') === false)
+        if(_setup.get('indexEnable') === false)
             return false;
-        for(let i of indexable)
-            if(typeof db[id][i] !== 'undefined')
-                if(typeof dbIndex[i][db[id][i]] !== 'undefined')
-                    delete dbIndex[i][db[id][i]];
-        updateLastSet();
+        for(let i of _indexable)
+            if(typeof _db[id][i] !== 'undefined')
+                if(typeof _dbIndex[i][_db[id][i]] !== 'undefined')
+                    delete _dbIndex[i][_db[id][i]];
+        _updateLastSet();
     };
     /*
      * @param {string}- id
@@ -181,140 +181,140 @@ const singleFileBase=function(storageFD, setIn, indexes){
      * @private
      * @return {boolean}
      */
-    const indexTo = function(id, container){
-        if(setup.get('indexEnable') === false)
+    const _indexTo = function(id, container){
+        if(_setup.get('indexEnable') === false)
             return false;
         for(let i in container)
-            if(indexable.indexOf(i) > -1)
-                dbIndex[i][db[id][i]]=id;
-        updateLastSet();
+            if(_indexable.indexOf(i) > -1)
+                _dbIndex[i][_db[id][i]]=id;
+        _updateLastSet();
         return true;
     };
     /*
      * @private
      * @return {boolean}
      */
-    const indexAll = function(){
-        if(setup.get('indexEnable') === false)
+    const _indexAll = function(){
+        if(_setup.get('indexEnable') === false)
             return false;
-        for(let id in db)
-            indexTo(id, db[id]);
-        updateLastSet();
+        for(let id in _db)
+            _indexTo(id, _db[id]);
+        _updateLastSet();
         return true;
     };
     /*
      * @private
      * @return {boolean}
      */
-    const read = function(){
-        db = JSON.parse(
-            fs.readFileSync(dbFD).toString()
+    const _read = function(){
+        _db = JSON.parse(
+            fs.readFileSync(_dbFD).toString()
         );
-        if (setup.get('hashCheck') === true)
-            return checkHash();
-        updateLastRead();
+        if (_setup.get('hashCheck') === true)
+            return _checkHash();
+        _updateLastRead();
         return true;
     };
     /*
      * @private
      * @return {integer}
      */
-    const count = function (){
-        if(stats.lastCount > stats.lastSet)
-            return stats.count;
+    const _count = function (){
+        if(_stats.lastCount > _stats.lastSet)
+            return _stats.count;
         let out = 0;
         let index = 0;
-        for(let i in db){
+        for(let i in _db){
             out++;
             index+=i.length;
         }
-        stats.count     = out;
-        stats.index     = index;
-        stats.bytes     = JSON.stringify(db).toString().length;
-        stats.lastCount = (+new Date);
+        _stats.count     = out;
+        _stats.index     = index;
+        _stats.bytes     = JSON.stringify(_db).toString().length;
+        _stats.lastCount = (Date.now());
         return out;
     };
     /*
      * @private
      * @return {boolean}
      */
-    const checkHash = function(){
-        readHash();
+    const _checkHash = function(){
+        _readHash();
         return (
-            hashCalculation() === hash
+            _hashCalculation() === _hash
         );
     };
     /*
      * @private
      * @return {void}
      */
-    const readHash = function(){
-        hash=fs.readFileSync(dbFD+'.hash').toString();
+    const _readHash = function(){
+        _hash=fs.readFileSync(_dbFD+'.hash').toString();
     };
     /*
      * @private
      * @return {boolean}
      */
-    const saveAuto = async function(){
-        if(setup.get('autoSave') === true)
-            return await save();
+    const _saveAuto = async function(){
+        if(_setup.get('autoSave') === true)
+            return await _save();
         return false;
     };
     /*
      * @private
      * @return {boolean}
      */
-    const save = async function(){
-        if(writingWait === true)
+    const _save = async function(){
+        if(_writingWait === true)
             return false;
-        if(writingProcess !== false)
-            return clearTimeout(writingProcess);
-        writingProcess = setTimeout(
-            saveDo,
-            setup.get('delayedSave')
+        if(_writingProcess !== false)
+            return clearTimeout(_writingProcess);
+        _writingProcess = setTimeout(
+            _saveDo,
+            _setup.get('delayedSave')
         );
-        writingWait = true;
+        _writingWait = true;
         return true;
     };
     /*
      * @private
      * @return {boolean}
      */
-    const saveDo = async function(){
-        writingWait = false;
-        if(writing === true)
-            return rewrite = true;
-        writingProcess = false;
-        writing = true;
+    const _saveDo = async function(){
+        _writingWait = false;
+        if(_writing === true)
+            return _rewrite = true;
+        _writingProcess = false;
+        _writing = true;
         fs.writeFileSync(
-            dbFD,
-            JSON.stringify(db)
+            _dbFD,
+            JSON.stringify(_db)
         );
-        if (setup.get('hashCheck') === true)
-            saveHash();
-        writing = false;
-        updateLastSave();
-        if (rewrite === false )
+        if (_setup.get('hashCheck') === true)
+            _saveHash();
+        _writing = false;
+        _updateLastSave();
+        if (_rewrite === false )
             return true;
-        rewrite = false;
-        return save();
+        _rewrite = false;
+        return _save();
     };
     /*
      * @private
      */
-    const saveHash =  function(){
+    const _saveHash =  function(){
         fs.writeFileSync(
-            dbFD+'.hash',
-            hashCalculation()
+            _dbFD+'.hash',
+            _hashCalculation()
         );
     };
     /*
      * @private
      */
-    const hashCalculation = function(){
+    const _hashCalculation = function(){
         return crypto.createHash('sha512')
             .update(
-                JSON.stringify(db),
+                JSON.stringify(_db),
                 'utf8'
             )
             .digest('hex');
@@ -323,109 +323,109 @@ const singleFileBase=function(storageFD, setIn, indexes){
      * @private
      * @return {boolean}
      */
-    const updateLastGet = function (){
-        stats.lastSet = (+new Date);
+    const _updateLastGet = function (){
+        _stats.lastSet = (Date.now());
         return true;
     };
     /*
      * @private
      * @return {boolean}
      */
-    const updateLastSet = function (){
-        stats.lastSet = (+new Date);
+    const _updateLastSet = function (){
+        _stats.lastSet = (Date.now());
         return true;
     };
     /*
      * @private
      * @return {boolean}
      */
-    const updateLastSave = function (){
-        stats.lastSave = (+new Date);
+    const _updateLastSave = function (){
+        _stats.lastSave = (Date.now());
         return true;
     };
     /*
      * @private
      * @return {boolean}
      */
-    const updateLastRead = function (){
-        stats.lastRead = (+new Date);
+    const _updateLastRead = function (){
+        _stats.lastRead = (Date.now());
         return true;
     };
     /*
      * @private
      * @var {dictonary}
      */
-    let stats = {
+    let _stats = {
         count:0,
         bytes:0,
         index:0,
-        start:(+new Date),
-        lastSet:(+new Date),
-        lastGet:(+new Date),
-        lastSave:(+new Date),
-        lastCount:(+new Date)
+        start:(Date.now()),
+        lastSet:(Date.now()),
+        lastGet:(Date.now()),
+        lastSave:(Date.now()),
+        lastCount:(Date.now())
     };
     /*
      * @private
      * @var {timeout}
     */
-    let writingProcess = false;
+    let _writingProcess = false;
     /*
      * @private
      * @var {boolean}
      */
-    let writingWait = false ;
+    let _writingWait = false ;
     /*
      * @private
      * @var {boolean}
      */
-    let writing = false;
+    let _writing = false;
     /*
      * @private
      * @var {boolean}
      */
-    let rewrite = false;
+    let _rewrite = false;
     /*
      * setup  helper
      * @private
      */
-    let setup = setIn;
+    let _setup = setIn;
     /*
      * @private
      * @var {boolean}
      */
-    let hash = '';
+    let _hash = '';
     /*
      * @private
      */
-    let db = {};
+    let _db = {};
     /*
      * @private
      * @var {boolean}
      */
-    let dbFD = storageFD;
+    let _dbFD = storageFD;
     /*
      * @private
      * @var {dictonary}
      */
-    let dbIndex = {};
+    let _dbIndex = {};
     /*
      * @private
      * @var {array}
      */
-    let indexable = [];
+    let _indexable = [];
     //constructor
-    if(typeof indexes !== 'undefined'){
-        indexable = indexes;
-        setup.set('indexEnable',  true);
-        for(let i of indexable)
-            dbIndex[i] = {};
+    if(typeof _indexes !== 'undefined'){
+        _indexable = indexes;
+        _setup.set('indexEnable',  true);
+        for(let i of _indexable)
+            _dbIndex[i] = {};
     }
 
     try{
-        read();
+        _read();
     }catch(e){
-        save();
+        _save();
     }
 };
 

@@ -19,23 +19,23 @@ const temprcBase = function(storageFD, settings, indexes){
      * @return {boolean}
      */
     this.save = function(stor){
-        stor = storCheck(stor);
-        return manager[stor].save();
+        stor = _storCheck(stor);
+        return _manager[stor].save();
     };
     /*
      * @public
      * @return {object} setup
      */
     this.setup = function(){
-        return setup;
+        return _setup;
     };
     /*
      * @public
      * @return {boolean}
      */
     this.indexRefresh = function(stor){
-        stor = storCheck(stor);
-        return manager[stor].indexRefresh();
+        stor = _storCheck(stor);
+        return _manager[stor].indexRefresh();
     };
     /*
      * @param {string} id
@@ -43,24 +43,24 @@ const temprcBase = function(storageFD, settings, indexes){
      * @return {mixed}
      */
     this.get=function(id, stor){
-        stor = storCheck(stor);
-        return manager[stor].get(id);
+        stor = _storCheck(stor);
+        return _manager[stor].get(id);
     };
     /*
      * @public
      * @return {string}
      */
     this.hash=function(stor){
-        stor = storCheck(stor);
-        return manager[stor].hash();
+        stor = _storCheck(stor);
+        return _manager[stor].hash();
     };
     /*
      * @public
      * @return {string}
      */
     this.hashCheck=function(stor){
-        stor = storCheck(stor);
-        return manager[stor].hashCheck();
+        stor = _storCheck(stor);
+        return _manager[stor].hashCheck();
     };
     /*
      * @param {string} id
@@ -68,8 +68,8 @@ const temprcBase = function(storageFD, settings, indexes){
      * @return {boolean}
      */
     this.del=function(id, stor){
-        stor = storCheck(stor);
-        return manager[stor].del(id);
+        stor = _storCheck(stor);
+        return _manager[stor].del(id);
     };
     /*
      * @param {string} id
@@ -78,8 +78,8 @@ const temprcBase = function(storageFD, settings, indexes){
      * @return  {boolean}
      */
     this.set=function(id, val, stor){
-        stor = storCheck(stor);
-        return manager[stor].set(id, val);
+        stor = _storCheck(stor);
+        return _manager[stor].set(id, val);
     };
     /*
      * @param {string}- id
@@ -87,24 +87,24 @@ const temprcBase = function(storageFD, settings, indexes){
      * @return {boolean}
      */
     this.check=function(id, stor){
-        stor = storCheck(stor);
-        return manager[stor].check(id);
+        stor = _storCheck(stor);
+        return _manager[stor].check(id);
     };
     /*
      * @public
      * @return {object}
      */
     this.full=function(stor){
-        stor = storCheck(stor);
-        return manager[stor].full();
+        stor = _storCheck(stor);
+        return _manager[stor].full();
     };
     /*
      * @public
      * @return {object}
      */
     this.all=function(stor){
-        stor = storCheck(stor);
-        return manager[stor].all();
+        stor = _storCheck(stor);
+        return _manager[stor].all();
     };
     /*
      *
@@ -112,32 +112,32 @@ const temprcBase = function(storageFD, settings, indexes){
      * @return {array}
      */
     this.list=function(stor){
-        stor = storCheck(stor);
-        return  manager[stor].list();
+        stor = _storCheck(stor);
+        return  _manager[stor].list();
     };
     /*
      * @public
      * @return integer
      */
     this.size=function(stor){
-        stor = storCheck(stor);
-        return manager[stor].size();
+        stor = _storCheck(stor);
+        return _manager[stor].size();
     };
     /*
      * @public
      * @return {boolean}
      */
     this.empty=function(stor){
-        stor = storCheck(stor);
-        return manager[stor].empty();
+        stor = _storCheck(stor);
+        return _manager[stor].empty();
     };
     /*
      * @public
      * @return {object}
      */
     this.stats=function(stor){
-        stor = storCheck(stor);
-        return manager[stor].stats();
+        stor = _storCheck(stor);
+        return _manager[stor].stats();
     };
     /*
      * @param {object}
@@ -145,15 +145,15 @@ const temprcBase = function(storageFD, settings, indexes){
      * @return {boolean}
      */
     this.importing = function(importDb, stor){
-        stor = storCheck(stor);
-        return manager[stor].importing();
+        stor = _storCheck(stor);
+        return _manager[stor].importing(importDb);
     };
-    let manager = {};
+    let _manager = {};
     /*
      * setup  helper
      * @private
      */
-    let setup = new setupBase({
+    let _setup = new setupBase({
         'autoSave':{
             'type'    : 'bool',
             'default' : true
@@ -184,7 +184,7 @@ const temprcBase = function(storageFD, settings, indexes){
      * @param {string}
      *@private
      */
-    const storCheck = function(stor){
+    const _storCheck = function(stor){
         if(typeof stor === 'undefined')
             return 'default';
         return stor;
@@ -192,19 +192,19 @@ const temprcBase = function(storageFD, settings, indexes){
     /*
      *@private
      */
-    const init = function(){
+    const _init = function(){
         if(typeof storageFD === 'string'){
-            if(setup.get('databbaseType') === 'multi'){
-                manager['default'] = new multiFile(
+            if(_setup.get('databbaseType') === 'multi'){
+                _manager['default'] = new multiFile(
                     storageFD,
-                    setup,
+                    _setup,
                     indexes
                 );
                 return true;
             }
-                manager['default'] = new singleFile(
+                _manager['default'] = new singleFile(
                 storageFD,
-                setup,
+                _setup,
                 indexes
             );
             return true;
@@ -212,8 +212,8 @@ const temprcBase = function(storageFD, settings, indexes){
     };
     // constructor
     if(typeof settings !== 'undefined')
-        setup.setup(settings);
-    init();
+        _setup.setup(settings);
+    _init();
 };
 
 exports.base = temprcBase;
