@@ -117,7 +117,7 @@ const temprcBase = function(storageFD, settings, indexes){
     };
     /*
      * @public
-     * @return integer
+     * @return {integer}
      */
     this.size=function(stor){
         stor = _storCheck(stor);
@@ -152,6 +152,7 @@ const temprcBase = function(storageFD, settings, indexes){
     /*
      * setup  helper
      * @private
+     * @var {setuprc}
      */
     let _setup = new setupBase({
         'autoSave':{
@@ -182,7 +183,7 @@ const temprcBase = function(storageFD, settings, indexes){
     });
     /*
      * @param {string}
-     *@private
+     * @private
      */
     const _storCheck = function(stor){
         if(typeof stor === 'undefined')
@@ -190,7 +191,7 @@ const temprcBase = function(storageFD, settings, indexes){
         return stor;
     };
     /*
-     *@private
+     * @private
      */
     const _init = function(){
         if(typeof storageFD === 'string'){
