@@ -1,3 +1,4 @@
+M
 /*
  *  @Soldy\temprc\multi\2021.01.16\GPL3
  */
@@ -138,7 +139,7 @@ const multiFileBase = function(storageFD, setIn, indexes){
      */
     this.stats=function(){
         count();
-        return stats;
+        return _stats;
     };
     /*
      * @param {object}
@@ -153,7 +154,7 @@ const multiFileBase = function(storageFD, setIn, indexes){
      * @private
      * @var {dictonary}
      */
-    let stats = {
+    let _stats = {
         count:0,
         bytes:0,
         index:0,
@@ -163,6 +164,8 @@ const multiFileBase = function(storageFD, setIn, indexes){
         lastSave:(+new Date),
         lastCount:(+new Date)
     };
+    let _list = [];
+    let _cache = {};
     /*
      * @private
      * @var {boolean}
@@ -203,7 +206,15 @@ const multiFileBase = function(storageFD, setIn, indexes){
      * @var {array}
      */
     let justCache = [];
-    
+    const _fileName =  function(id){
+        return(    
+             dbFD+
+             '/'+
+             id+
+             '.trcj''
+        );
+
+    }
     const get = function(i){
          fs.readFileSync(
              dbFD+
@@ -232,14 +243,24 @@ const multiFileBase = function(storageFD, setIn, indexes){
             return await save();
         return false;
     };
+    const save = async function(){
+
+    }
     /*
      * @private
      */
     const mkDb = function(){
+        _list = [];
         const stat = fs.statiSync(dbFD);
         if (typeof stat === 'undefined')
             fs.mkdirSync(dbFD);
-        fs.readdirSync(dbFD);
+        for(let i of fs.readdirSync(dbFD)){
+            const l = i.length;
+            if(i.substring(l-5) === '.trcj')
+                _list.push(
+                    i.substr(0, l-5)
+                );
+        }
     };
 
 };
