@@ -1,4 +1,4 @@
-M
+
 /*
  *  @Soldy\temprc\multi\2021.01.16\GPL3
  */
@@ -28,10 +28,7 @@ const multiFileBase = function(storageFD, setIn, indexes){
     this.get=function(id){
         if(typeof id !== 'string')
             return false;
-        if(typeof db[id] === 'undefined')
-            return undefined;
-        updateLastGet();
-        return db[id];
+        return _get();
     };
     /*
      * @public
@@ -71,9 +68,7 @@ const multiFileBase = function(storageFD, setIn, indexes){
             return false;
         if (typeof val === 'undefined')
             return false;
-        db[id] = val;
-        saveAuto();
-        updateLastSet();
+        _set(id, val);
         return true;
     };
     /*
@@ -207,29 +202,36 @@ const multiFileBase = function(storageFD, setIn, indexes){
      */
     let justCache = [];
     const _fileName =  function(id){
-        return(    
+        return (
              dbFD+
              '/'+
              id+
-             '.trcj''
+             '.trcj'
         );
 
     }
-    const get = function(i){
-         fs.readFileSync(
-             dbFD+
-             '/'+
-             i
+    const _get = function(id){
+        if(0 > _list.indexOf(id))
+            return false;
+        return fs.readFileSync(
+            _fileName(id)
          );
     };
+    const _check = function (id) {
+        if(
+            (typeof id !== 'string') ||
+            (-1 > _list.indexOf(id))
+        )
+            return false;
+        return true;
 
-    const set = async function(i, v){
+    }
+    const _set = async function(id, val){
         fs.writeFileSync(
-             dbFD+
-             '/'+
-             i,
-             JSON.stringify(db)
+            fileName(id),
+            JSON.stringify(val)
         );
+        updateLastSet();
     };
     const count = function (){
 
