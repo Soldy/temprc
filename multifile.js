@@ -201,15 +201,57 @@ const multiFileBase = function(storageFD, setIn, indexes){
      * @var {array}
      */
     let justCache = [];
+ 
     const _fileName =  function(id){
         return (
              dbFD+
              '/'+
              id+
-             '.trcj'
+             '.trcm'
         );
 
     }
+    /*
+     * @param {string}
+     * @private
+     * @return {string}
+     */
+    const _configFileName = function(dbFD){
+        _coonfig_file = (
+            dbFD+
+            '.trcc'
+        );
+    }
+    const _prepareConfig = function(){
+        return  {
+             stats : _stats,
+        }
+    }
+    /*
+     * @private
+     */
+    const _saveConfig =  function(){
+        fs.writeFileSync(
+            _config_file,
+            _prepareConfig()
+        );
+    };
+    /*
+     * @private
+     */
+    const _readConfig =  function(){
+        const config = JSON.parse(
+            fs.readFileSync(
+                _config_file
+            ).toString()
+        );
+        _stats = config.stats;
+    };
+    /*
+     * @param {string}
+     * @private
+     * @return {object}
+     */
     const _get = function(id){
         if(0 > _list.indexOf(id))
             return false;
