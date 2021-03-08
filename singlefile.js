@@ -263,7 +263,7 @@ const singleFileBase=function(storageFD, setIn, indexes){
      * @return {string}
      */
     const _configFileName = function(dbFD){
-        _coonfig_file = (
+        _config_file = (
             dbFD+
             '.trcc'
         );
@@ -499,7 +499,7 @@ const singleFileBase=function(storageFD, setIn, indexes){
     }catch(e){
        _old_hash = _hashCalculation();
        _hash = _hashCalculation();
-       _savewConfig();
+       _saveConfig();
     }
 };
 
