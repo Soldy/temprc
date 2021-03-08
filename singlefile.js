@@ -97,10 +97,10 @@ const singleFileBase=function(storageFD, setIn, indexes){
     this.check=function(id){
         if(
             (typeof id !== 'string') ||
-            (typeof _db[id] !== 'undefined')
+            (typeof _db[id] === 'undefined')
         )
-            return true;
-        return false;
+            return false;
+        return true;
     };
     /*
      * @public
@@ -165,6 +165,148 @@ const singleFileBase=function(storageFD, setIn, indexes){
     };
     /*
      * @private
+     * @var {dictonary}
+     */
+    let _stats = {
+        count:0,
+        bytes:0,
+        index:0,
+        corrupt:[],
+        start:(Date.now()),
+        lastSet:(Date.now()),
+        lastGet:(Date.now()),
+        lastSave:(Date.now()),
+        lastCount:(Date.now())
+    };
+    /*
+     * @private
+     * @var {timeout}
+    */
+    let _writingProcess = false;
+    /*
+     * @private
+     * @var {boolean}
+     */
+    let _writingWait = false ;
+    /*
+     * @private
+     * @var {boolean}
+     */
+    let _writing = false;
+    /*
+     * @private
+     * @var {boolean}
+     */
+    let _rewrite = false;
+    /*
+     * setup  helper
+     * @private
+     * @var {setupRc}
+     */
+    let _setup = setIn;
+    /*
+     * @private
+     * @var {string}
+     */
+    let _hash = '';
+    /*
+     * @private
+     * @var {string}
+     */
+    let _old_hash = '';
+    /*
+     * @private
+     * @var {dictonary}
+     */
+    let _db = {};
+    /*
+     * @private
+     * @var {string}
+     */
+    let _dbFD = storageFD;
+    /*
+     * @private
+     * @var {string}
+     */
+    let _config_file = '';
+    /*
+     * @private
+     * @var {string}
+     */
+    let _db_file = '';
+   
+    /*
+     * @private
+     * @var {dictonary}
+     */
+    let _dbIndex = {};
+    /*
+     * @private
+     * @var {array}
+     */
+    let _indexable = [];
+
+    /*
+     * @param {string}
+     * @private
+     * @return {string}
+     */
+    const _dbFileName = function(dbFD){
+        _db_file = (
+            dbFD+
+            '.trcs'
+        );
+    }
+    /*
+     * @param {string}
+     * @private
+     * @return {string}
+     */
+    const _configFileName = function(dbFD){
+        _coonfig_file = (
+            dbFD+
+            '.trcc'
+        );
+    }
+    const _prepareConfig = function(){
+        return  {
+             stats : _stats,
+             hash  : _hashCalculation()
+        }
+    }
+    /*
+     * @private
+     */
+    const _saveConfig =  function(){
+        fs.writeFileSync(
+            _config_file,
+            _prepareConfig()
+        );
+    };
+    /*
+     * @private
+     */
+    const _readConfig =  function(){
+        const config = JSON.parse(
+            fs.readFileSync(
+                _config_file
+            ).toString()
+        );
+        _stats = config.stats;
+        _old_hash = config.hash;
+    };
+    /*
+     * @private
+     */
+    const _corruptionCheck = function(){
+        if( _hashCalculation() !== _old_hash)
+             _stats.corrupt.push(
+                 Date.now()
+             );
+    }
+    /*
+     * @private
+     * @return {boolean||void}
      */
     const indexClear = function(id){
         if(_setup.get('indexEnable') === false)
@@ -208,7 +350,9 @@ const singleFileBase=function(storageFD, setIn, indexes){
      */
     const _read = function(){
         _db = JSON.parse(
-            fs.readFileSync(_dbFD).toString()
+            fs.readFileSync(
+                _db_file
+            ).toString()
         );
         if (_setup.get('hashCheck') === true)
             return _checkHash();
@@ -239,17 +383,9 @@ const singleFileBase=function(storageFD, setIn, indexes){
      * @return {boolean}
      */
     const _checkHash = function(){
-        _readHash();
         return (
             _hashCalculation() === _hash
         );
-    };
-    /*
-     * @private
-     * @return {void}
-     */
-    const _readHash = function(){
-        _hash=fs.readFileSync(_dbFD+'.hash').toString();
     };
     /*
      * @private
@@ -287,26 +423,17 @@ const singleFileBase=function(storageFD, setIn, indexes){
         _writingProcess = false;
         _writing = true;
         fs.writeFileSync(
-            _dbFD,
+            _db_file,
             JSON.stringify(_db)
         );
         if (_setup.get('hashCheck') === true)
-            _saveHash();
+            _saveConfig();
         _writing = false;
         _updateLastSave();
         if (_rewrite === false )
             return true;
         _rewrite = false;
         return _save();
-    };
-    /*
-     * @private
-     */
-    const _saveHash =  function(){
-        fs.writeFileSync(
-            _dbFD+'.hash',
-            _hashCalculation()
-        );
     };
     /*
      * @private
@@ -351,69 +478,6 @@ const singleFileBase=function(storageFD, setIn, indexes){
         _stats.lastRead = (Date.now());
         return true;
     };
-    /*
-     * @private
-     * @var {dictonary}
-     */
-    let _stats = {
-        count:0,
-        bytes:0,
-        index:0,
-        start:(Date.now()),
-        lastSet:(Date.now()),
-        lastGet:(Date.now()),
-        lastSave:(Date.now()),
-        lastCount:(Date.now())
-    };
-    /*
-     * @private
-     * @var {timeout}
-    */
-    let _writingProcess = false;
-    /*
-     * @private
-     * @var {boolean}
-     */
-    let _writingWait = false ;
-    /*
-     * @private
-     * @var {boolean}
-     */
-    let _writing = false;
-    /*
-     * @private
-     * @var {boolean}
-     */
-    let _rewrite = false;
-    /*
-     * setup  helper
-     * @private
-     */
-    let _setup = setIn;
-    /*
-     * @private
-     * @var {boolean}
-     */
-    let _hash = '';
-    /*
-     * @private
-     */
-    let _db = {};
-    /*
-     * @private
-     * @var {boolean}
-     */
-    let _dbFD = storageFD;
-    /*
-     * @private
-     * @var {dictonary}
-     */
-    let _dbIndex = {};
-    /*
-     * @private
-     * @var {array}
-     */
-    let _indexable = [];
     //constructor
     if(typeof _indexes !== 'undefined'){
         _indexable = indexes;
@@ -421,11 +485,21 @@ const singleFileBase=function(storageFD, setIn, indexes){
         for(let i of _indexable)
             _dbIndex[i] = {};
     }
+    _configFileName(storageFD);
+    _dbFileName(storageFD);
 
     try{
         _read();
     }catch(e){
         _save();
+    }
+    try{
+       _readConfig();
+       _corruptionCheck();
+    }catch(e){
+       _old_hash = _hashCalculation();
+       _hash = _hashCalculation();
+       _savewConfig();
     }
 };
 
