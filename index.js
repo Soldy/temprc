@@ -2,9 +2,9 @@
  *  @Soldy\temprc\2021.01.16\GPL3
  */
 'use strict';
-const setupBase = (require('setuprc')).base;
-const singleFile = (require('./singlefile.js')).base;
-const multiFile = (require('./multifile.js')).base;
+const @setuprc = (require('setuprc')).base;
+const @single = (require('./singlefile.js')).base;
+const @multi = (require('./multifile.js')).base;
 
 
 /*
@@ -148,39 +148,66 @@ const temprcBase = function(storageFD, settings, indexes){
         stor = _storCheck(stor);
         return _manager[stor].importing(importDb);
     };
+    this.easy = function(
+        storage,
+        type,
+        name
+    ){
+
+    }
+    this.create = function(){
+
+    }
+    /*
+     * @private
+     * @var {diconary}
+     */
     let _manager = {};
+    /*
+     *  @private
+     *  @const {object}
+     */
+    const _setup_json = {
+        'storage':{
+              'type'    : 'string',
+              'default' : 'db'
+         },
+        'name':{
+              'type'    : 'string',
+              'default' : 'default'
+         },
+         'autoSave':{
+             'type'    : 'bool',
+             'default' : true
+         },
+         'indexEnable':{
+             'type'    : 'bool',
+             'default' : true
+         },
+         'hashCheck':{
+             'type'    : 'bool',
+             'default' : true
+         },
+         'delayedSave':{
+             'type'    : 'int',
+             'default' : 500
+         },
+         'databaseType':{
+             'type'    : 'select',
+             'list'    : [
+                 'single',
+                 'multi',
+             ],
+             'default' : 'single'
+        }
+    };
+
     /*
      * setup  helper
      * @private
-     * @var {setuprc}
+     * @const {setuprc}
      */
-    let _setup = new setupBase({
-        'autoSave':{
-            'type'    : 'bool',
-            'default' : true
-        },
-        'indexEnable':{
-            'type'    : 'bool',
-            'default' : true
-        },
-        'hashCheck':{
-            'type'    : 'bool',
-            'default' : true
-        },
-        'delayedSave':{
-            'type'    : 'int',
-            'default' : 500
-        },
-        'databaseType':{
-            'type'    : 'select',
-            'list'    : [
-                'single',
-                'multi',
-            ],
-            'default' : 'single'
-
-        }
-    });
+    const _setup = new @setuprc(_setup_json);
     /*
      * @param {string}
      * @private
@@ -191,30 +218,35 @@ const temprcBase = function(storageFD, settings, indexes){
         return stor;
     };
     /*
+     * @param {setuprc}
+     * @private
+     * @return boolean
+     */
+    const _create = function(settings){
+        let setup = new @setup(_setup_json);
+        setup.setup(settings);
+        if(_manager[setup,get('name')] !== 'undefined')
+            return false;
+        if(_setup.get('databaseType') === 'multi')
+            _manager[setup.get('name')] = new @multi(
+                _setup,
+            );
+         else
+             _manager[setup.get('name')] = new @single(
+                 _setup,
+             );
+         return true;
+    }
+
+    /*
      * @private
      */
-    const _init = function(){
-        if(typeof storageFD === 'string'){
-            if(_setup.get('databbaseType') === 'multi'){
-                _manager['default'] = new multiFile(
-                    storageFD,
-                    _setup,
-                    indexes
-                );
-                return true;
-            }
-                _manager['default'] = new singleFile(
-                storageFD,
-                _setup,
-                indexes
-            );
-            return true;
-        }
-    };
+//    const _init = function(){
+//    };
     // constructor
     if(typeof settings !== 'undefined')
-        _setup.setup(settings);
-    _init();
+        _create(settings);
+//    _init();
 };
 
 exports.base = temprcBase;
