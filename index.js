@@ -155,8 +155,13 @@ const temprcBase = function(storageFD, settings, indexes){
     ){
 
     }
-    this.create = function(){
-
+    /*
+     * @param {object}
+     * @public
+     * @return boolean
+    */
+    this.create = function(settings){
+        return _create(settings);
     }
     /*
      * @private
