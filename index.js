@@ -2,9 +2,9 @@
  *  @Soldy\temprc\2021.01.16\GPL3
  */
 'use strict';
-const @setuprc = (require('setuprc')).base;
-const @single = (require('./singlefile.js')).base;
-const @multi = (require('./multifile.js')).base;
+const $setuprc = (require('setuprc')).base;
+const $single = (require('./singlefile.js')).base;
+const $multi = (require('./multifile.js')).base;
 
 
 /*
@@ -13,7 +13,7 @@ const @multi = (require('./multifile.js')).base;
  * @param {array} indexes
  * @prototype
  */
-const temprcBase = function(storageFD, settings, indexes){
+const temprcBase = function(settings){
     /*
      * @public
      * @return {boolean}
@@ -212,7 +212,7 @@ const temprcBase = function(storageFD, settings, indexes){
      * @private
      * @const {setuprc}
      */
-    const _setup = new @setuprc(_setup_json);
+    const _setup = new $setuprc(_setup_json);
     /*
      * @param {string}
      * @private
@@ -228,18 +228,22 @@ const temprcBase = function(storageFD, settings, indexes){
      * @return boolean
      */
     const _create = function(settings){
-        let setup = new @setup(_setup_json);
+        let setup = new $setuprc(
+            _setup_json
+        );
         setup.setup(settings);
-        if(_manager[setup,get('name')] !== 'undefined')
+        if(typeof _manager[setup.get('name')] !== 'undefined')
             return false;
-        if(_setup.get('databaseType') === 'multi')
-            _manager[setup.get('name')] = new @multi(
-                _setup,
+        if(_setup.get('databaseType') === 'multi'){
+            constole.log('multi');
+            _manager[setup.get('name')] = new $multi(
+                setup,
             );
-         else
-             _manager[setup.get('name')] = new @single(
-                 _setup,
+        }else{
+             _manager[setup.get('name')] = new $single(
+                 setup,
              );
+         }
          return true;
     }
 

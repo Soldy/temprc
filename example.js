@@ -1,5 +1,5 @@
 
-const temprc = new (require('./index.js')).base('db.js');
+const temprc = new (require('./index.js')).base({});
 
 (async function(){
 console.log(

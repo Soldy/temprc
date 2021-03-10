@@ -11,7 +11,7 @@ const crypto = require('crypto');
  * @param {array} indexes
  * @prototype
  */
-const singleFileBase=function(storageFD, setIn, indexes){
+const singleFileBase=function(settings){
     /*
      * @public
      * @return {boolean}
@@ -163,6 +163,7 @@ const singleFileBase=function(storageFD, setIn, indexes){
         _db = importDb;
         return true;
     };
+
     /*
      * @private
      * @var {dictonary}
@@ -203,7 +204,7 @@ const singleFileBase=function(storageFD, setIn, indexes){
      * @private
      * @var {setupRc}
      */
-    let _setup = setIn;
+    let _setup = settings;
     /*
      * @private
      * @var {string}
@@ -219,11 +220,6 @@ const singleFileBase=function(storageFD, setIn, indexes){
      * @var {dictonary}
      */
     let _db = {};
-    /*
-     * @private
-     * @var {string}
-     */
-    let _dbFD = storageFD;
     /*
      * @private
      * @var {string}
@@ -485,8 +481,12 @@ const singleFileBase=function(storageFD, setIn, indexes){
         for(let i of _indexable)
             _dbIndex[i] = {};
     }
-    _configFileName(storageFD);
-    _dbFileName(storageFD);
+    _configFileName(
+        _setup.get('storage')
+    );
+    _dbFileName(
+        _setup.get('storage')
+    );
 
     try{
         _read();
