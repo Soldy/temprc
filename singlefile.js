@@ -247,29 +247,29 @@ const singleFileBase=function(settings){
      * @private
      * @return {string}
      */
-    const _dbFileName = function(dbFD){
+    const _dbFileName = function(file_name){
         _db_file = (
-            dbFD+
+            file_name+
             '.trcs'
         );
-    }
+    };
     /*
      * @param {string}
      * @private
      * @return {string}
      */
-    const _configFileName = function(dbFD){
+    const _configFileName = function(file_name){
         _config_file = (
-            dbFD+
+            file_name+
             '.trcc'
         );
-    }
+    };
     const _prepareConfig = function(){
         return  {
-             stats : _stats,
-             hash  : _hashCalculation()
-        }
-    }
+            stats : _stats,
+            hash  : _hashCalculation()
+        };
+    };
     /*
      * @private
      */
@@ -296,10 +296,10 @@ const singleFileBase=function(settings){
      */
     const _corruptionCheck = function(){
         if( _hashCalculation() !== _old_hash)
-             _stats.corrupt.push(
-                 Date.now()
-             );
-    }
+            _stats.corrupt.push(
+                Date.now()
+            );
+    };
     /*
      * @private
      * @return {boolean||void}
@@ -494,12 +494,12 @@ const singleFileBase=function(settings){
         _save();
     }
     try{
-       _readConfig();
-       _corruptionCheck();
+        _readConfig();
+        _corruptionCheck();
     }catch(e){
-       _old_hash = _hashCalculation();
-       _hash = _hashCalculation();
-       _saveConfig();
+        _old_hash = _hashCalculation();
+        _hash = _hashCalculation();
+        _saveConfig();
     }
 };
 
