@@ -162,7 +162,7 @@ const temprcBase = function(settings){
             settings['name'] = name;
         return _create(settings);
 
-    }
+    };
     /*
      * @param {object}
      * @public
@@ -170,7 +170,7 @@ const temprcBase = function(settings){
     */
     this.create = function(settings){
         return _create(settings);
-    }
+    };
     /*
      * @private
      * @var {diconary}
@@ -182,36 +182,36 @@ const temprcBase = function(settings){
      */
     const _setup_json = {
         'storage':{
-              'type'    : 'string',
-              'default' : 'db'
-         },
+            'type'    : 'string',
+            'default' : 'db'
+        },
         'name':{
-              'type'    : 'string',
-              'default' : 'default'
-         },
-         'autoSave':{
-             'type'    : 'bool',
-             'default' : true
-         },
-         'indexEnable':{
-             'type'    : 'bool',
-             'default' : true
-         },
-         'hashCheck':{
-             'type'    : 'bool',
-             'default' : true
-         },
-         'delayedSave':{
-             'type'    : 'int',
-             'default' : 500
-         },
-         'type':{
-             'type'    : 'select',
-             'list'    : [
-                 'single',
-                 'multi',
-             ],
-             'default' : 'single'
+            'type'    : 'string',
+            'default' : 'default'
+        },
+        'autoSave':{
+            'type'    : 'bool',
+            'default' : true
+        },
+        'indexEnable':{
+            'type'    : 'bool',
+            'default' : true
+        },
+        'hashCheck':{
+            'type'    : 'bool',
+            'default' : true
+        },
+        'delayedSave':{
+            'type'    : 'int',
+            'default' : 500
+        },
+        'type':{
+            'type'    : 'select',
+            'list'    : [
+                'single',
+                'multi',
+            ],
+            'default' : 'single'
         }
     };
 
@@ -243,23 +243,22 @@ const temprcBase = function(settings){
         if(typeof _manager[setup.get('name')] !== 'undefined')
             return false;
         if(_setup.get('type') === 'multi'){
-            constole.log('multi');
             _manager[setup.get('name')] = new $multi(
                 setup,
             );
         }else{
-             _manager[setup.get('name')] = new $single(
-                 setup,
-             );
-         }
-         return true;
-    }
+            _manager[setup.get('name')] = new $single(
+                setup,
+            );
+        }
+        return true;
+    };
 
     /*
      * @private
      */
-//    const _init = function(){
-//    };
+    //    const _init = function(){
+    //    };
     // constructor
     if(typeof settings !== 'undefined')
         _create(settings);
