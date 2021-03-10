@@ -197,7 +197,7 @@ const temprcBase = function(settings){
              'type'    : 'int',
              'default' : 500
          },
-         'databaseType':{
+         'type':{
              'type'    : 'select',
              'list'    : [
                  'single',
@@ -234,7 +234,7 @@ const temprcBase = function(settings){
         setup.setup(settings);
         if(typeof _manager[setup.get('name')] !== 'undefined')
             return false;
-        if(_setup.get('databaseType') === 'multi'){
+        if(_setup.get('type') === 'multi'){
             constole.log('multi');
             _manager[setup.get('name')] = new $multi(
                 setup,
