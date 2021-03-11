@@ -304,7 +304,7 @@ const singleFileBase=function(settings){
      * @private
      * @return {boolean||void}
      */
-    const indexClear = function(id){
+    const _indexClear = function(id){
         if(_setup.get('indexEnable') === false)
             return false;
         for(let i of _indexable)
