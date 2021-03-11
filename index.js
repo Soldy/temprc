@@ -5,6 +5,7 @@
 const $setuprc = (require('setuprc')).base;
 const $single = (require('./singlefile.js')).base;
 const $multi = (require('./multifile.js')).base;
+const $inter = (require('./multifile.js')).base;
 
 
 /*
@@ -172,6 +173,17 @@ const temprcBase = function(settings){
         return _create(settings);
     };
     /*
+     * @param {}
+     * @public
+     * @return boolean
+    */
+    this.interface = function(stor){
+        stor = _storCheck(stor);
+        return new $inter(
+            _manager[stor]
+        );
+    };
+    /*
      * @private
      * @var {diconary}
      */
@@ -242,7 +254,8 @@ const temprcBase = function(settings){
         setup.setup(settings);
         if(typeof _manager[setup.get('name')] !== 'undefined')
             return false;
-        if(_setup.get('type') === 'multi'){
+        console.log(setup.get('type'));
+        if(setup.get('type') === 'multi'){
             _manager[setup.get('name')] = new $multi(
                 setup,
             );
