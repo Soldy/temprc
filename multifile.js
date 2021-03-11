@@ -12,13 +12,13 @@ const crypto = require('crypto');
  * @param {array} indexes
  * @prototype
  */
-const multiFileBase = function(storageFD, setIn, indexes){
+const multiFileBase = function(settings){
     /*
      * @public
      * @return {boolean}
      */
     this.save = function(){
-        return save();
+        return _save();
     };
     /*
      * @param {string} id
@@ -28,21 +28,22 @@ const multiFileBase = function(storageFD, setIn, indexes){
     this.get=function(id){
         if(typeof id !== 'string')
             return false;
-        return _get();
+        return _get(id);
     };
     /*
      * @public
      * @return {string}
      */
     this.hash=function(){
-        return hashCalculation();
+        return _hashCalculation();
+
     };
     /*
      * @public
      * @return {string}
      */
     this.hashCheck=function(){
-        return checkHash();
+        return _checkHash();
     };
     /*
      * @param {string} id
@@ -52,9 +53,18 @@ const multiFileBase = function(storageFD, setIn, indexes){
     this.del=function(id){
         if(typeof id !== 'string')
             return false;
-        delete db[id];
-        saveAuto();
-        updateLastSet();
+        if (typeof _db[id] !== 'undefined')
+            delete _db[id];
+        const position = _list.indexOf(id);
+        if( 0 > position )
+            _list.splice(
+                position,
+                1
+            );
+        fs.unlinkSync(
+            _fileName(id) 
+        );
+        _updateLastSet();
         return true;
     };
     /*
@@ -79,7 +89,7 @@ const multiFileBase = function(storageFD, setIn, indexes){
     this.check=function(id){
         if(
             (typeof id !== 'string') ||
-            (typeof db[id] !== 'undefined')
+            (typeof _db[id] !== 'undefined')
         )
             return true;
         return false;
@@ -142,7 +152,7 @@ const multiFileBase = function(storageFD, setIn, indexes){
      * @return {boolean}
      */
     this.importing = function(importDb){
-        db = importDb;
+        _db = importDb;
         return true;
     };
     /*
@@ -201,10 +211,43 @@ const multiFileBase = function(storageFD, setIn, indexes){
      * @var {array}
      */
     let justCache = [];
- 
+    const _db = {};
+    const _setup = settings; 
+    /*
+     * @private
+     * @return {boolean}
+     */
+    const _updateLastGet = function (){
+        _stats.lastSet = (Date.now());
+        return true;
+    };
+    /*
+     * @private
+     * @return {boolean}
+     */
+    const _updateLastSet = function (){
+        _stats.lastSet = (Date.now());
+        return true;
+    };
+    /*
+     * @private
+     * @return {boolean}
+     */
+    const _updateLastSave = function (){
+        _stats.lastSave = (Date.now());
+        return true;
+    };
+    /*
+     * @private
+     * @return {boolean}
+     */
+    const _updateLastRead = function (){
+        _stats.lastRead = (Date.now());
+        return true;
+    };
     const _fileName =  function(id){
         return (
-             dbFD+
+             _setup.get('storage')+
              '/'+
              id+
              '.trcm'
@@ -218,7 +261,7 @@ const multiFileBase = function(storageFD, setIn, indexes){
      */
     const _configFileName = function(dbFD){
         _coonfig_file = (
-            dbFD+
+            _setup.get('storage')+
             '.trcc'
         );
     }
@@ -255,28 +298,35 @@ const multiFileBase = function(storageFD, setIn, indexes){
     const _get = function(id){
         if(0 > _list.indexOf(id))
             return false;
-        return fs.readFileSync(
-            _fileName(id)
-         );
+        return JSON.parse(
+            fs.readFileSync(
+                _fileName(id)
+            ).toString()
+        );
     };
     const _check = function (id) {
         if(
             (typeof id !== 'string') ||
-            (-1 > _list.indexOf(id))
+            (0 > _list.indexOf(id))
         )
             return false;
         return true;
 
     }
     const _set = async function(id, val){
+        if(0 > _list.indexOf(id))
+             _list.push(id);
         fs.writeFileSync(
-            fileName(id),
+            _fileName(id),
             JSON.stringify(val)
         );
-        updateLastSet();
+        _updateLastSet();
     };
     const count = function (){
-
+        return 0;
+    };
+    const _hashCalculation = function(){
+        return 0;
     };
     /*
      * @private
@@ -291,14 +341,19 @@ const multiFileBase = function(storageFD, setIn, indexes){
 
     }
     /*
+     * !!! NO ASYNC IN HERE !!!
      * @private
+     * 
      */
     const mkDb = function(){
         _list = [];
-        const stat = fs.statiSync(dbFD);
+        let storage = _setup.get('storage');
+        const stat = fs.statiSync(
+            storage
+        );
         if (typeof stat === 'undefined')
-            fs.mkdirSync(dbFD);
-        for(let i of fs.readdirSync(dbFD)){
+            fs.mkdirSync(stoorage);
+        for(let i of fs.readdirSync(storage)){
             const l = i.length;
             if(i.substring(l-5) === '.trcj')
                 _list.push(
