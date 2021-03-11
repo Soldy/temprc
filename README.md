@@ -1,6 +1,6 @@
 # temprc
 
-Simple temporally full block data storage for scientific calculation.
+Simple temporaly full block data storage for scientific calculation.
 
 
 
@@ -8,11 +8,15 @@ Simple temporally full block data storage for scientific calculation.
 Example:
 
 ``` javascript
-    const temprc = new (require('temprc')).base('tempdb');
+    const temprc = new (require('temprc')).base({
+        'storage':'storage', // storage file or directory'
+        'type':'single', // database type (single or multi) /optional/
+        'name':'name' // database name /optional/
+    });
 
-    temprc.set('variable', {'test':'test string'});
+    temprc.set('variable', {'test':'test string'}, 'database');
 
-    let data = temprc.get('variable');
+    let data = temprc.get('variable', 'database');
     console.log(data.test);
     //    output : test string
 
@@ -24,7 +28,7 @@ Set variable :
 
 
 ``` javascript
-    temprc.set(name, data);
+    temprc.set(name, data, 'database');
 
 ```
 
@@ -33,7 +37,7 @@ Get variable :
 
 
 ``` javascript
-    let out = temprc.get(name);
+    let out = temprc.get(name, 'database');
     // out = value
 
 ```
@@ -42,7 +46,7 @@ Check variable existence :
 
 
 ``` javascript
-    let out = temprc.check(name);
+    let out = temprc.check(name, 'database');
     // out = true or false (boolean)
 
 ```
@@ -51,7 +55,7 @@ List all stored variable :
 
 ```javascript
 
-    let out = temprc.list();
+    let out = temprc.list('database');
     // out = [all variable name] (array)
 
 ```
@@ -59,7 +63,7 @@ List all stored variable :
 Get all elements form the db:
 
 ```javascript
-    let out = temprc.all();
+    let out = temprc.all('database');
     // out = object with all element
 ```
 
@@ -67,7 +71,7 @@ Remove one element:
 
 ```javascript
 
-   temprc.del(name);
+   let out = temprc.del(name, database);
    // out = true or false (boolean)
 ```
 
@@ -75,14 +79,14 @@ Force data save
 
 ```javascript
 
-   temprc.save();
+   temprc.save('database');
 ```
 
 Setup autosave (enable/disable)
 
 ```javascript
 
-   temprc.setup('autosave', true || false);
+   temprc.setup('autosave', true || false, 'database');
    // default is : true
 ```
 
@@ -90,7 +94,7 @@ Setup hash (enable/disable)
 
 ```javascript
 
-   temprc.setup('hash', true || false);
+   temprc.setup('hash', true || false, 'database');
    // default is : true
 ```
 
