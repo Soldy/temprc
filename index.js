@@ -5,7 +5,7 @@
 const $setuprc = (require('setuprc')).base;
 const $single = (require('./singlefile.js')).base;
 const $multi = (require('./multifile.js')).base;
-const $inter = (require('./multifile.js')).base;
+const $inter = (require('./interface.js')).base;
 
 
 /*
