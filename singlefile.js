@@ -277,7 +277,9 @@ const singleFileBase=function(settings){
         fs.writeFileSync(
             _config_file,
             JSON.stringify(
-                _prepareConfig()
+                _prepareConfig(),
+                null,
+                4
             )
         );
     };
