@@ -68,9 +68,9 @@ const temprcBase = function(settings){
      * @public
      * @return {boolean}
      */
-    this.del=function(id, stor){
+    this.del = async function(id, stor){
         stor = _storCheck(stor);
-        return _manager[stor].del(id);
+        return await _manager[stor].del(id);
     };
     /*
      * @param {string} id

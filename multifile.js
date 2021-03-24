@@ -50,22 +50,8 @@ const multiFileBase = function(settings){
      * @public
      * @return {boolean}
      */
-    this.del=function(id){
-        if(typeof id !== 'string')
-            return false;
-        if (typeof _db[id] !== 'undefined')
-            delete _db[id];
-        const position = _list.indexOf(id);
-        if( 0 > position )
-            _list.splice(
-                position,
-                1
-            );
-        fs.unlinkSync(
-            _fileName(id) 
-        );
-        _updateLastSet();
-        return true;
+    this.del = async function(id){
+        return await _del(id);
     };
     /*
      * @param {string} id
@@ -87,12 +73,7 @@ const multiFileBase = function(settings){
      * @return {boolean}
      */
     this.check=function(id){
-        if(
-            (typeof id !== 'string') ||
-            (typeof _db[id] !== 'undefined')
-        )
-            return true;
-        return false;
+        return _check(id);
     };
     /*
      * @public
@@ -100,8 +81,8 @@ const multiFileBase = function(settings){
      */
     this.full=function(){
         let list = {};
-        for (let i of indexList)
-            list[i] = get(i);
+        for (let i of _list)
+            list[i] = _get(i);
         return list;
     };
     /*
@@ -110,8 +91,10 @@ const multiFileBase = function(settings){
      */
     this.all=function(){
         let list = [];
-        for (let i of indexList)
-            list.push(get(i));
+        for (let i of _list)
+            list.push(
+                _get(i)
+            );
         return list;
     };
     /*
@@ -120,21 +103,21 @@ const multiFileBase = function(settings){
      * @return {array}
      */
     this.list=function(){
-        return indexList;
+        return _list;
     };
     /*
      * @public
      * @return integer
      */
     this.size=function(){
-        return count();
+        return _count();
     };
     /*
      * @public
      * @return {boolean}
      */
     this.empty=function(){
-        if( 0 === parseInt(count()))
+        if( 0 === parseInt(_count()))
             return true;
         return false;
     };
@@ -143,7 +126,7 @@ const multiFileBase = function(settings){
      * @return {object}
      */
     this.stats=function(){
-        count();
+        _count();
         return _stats;
     };
     /*
@@ -200,7 +183,7 @@ const multiFileBase = function(settings){
      * @private
      * @var {array}
      */
-    let indexList = [];
+    let _indexList = [];
     /*
      * @private
      * @var {array}
@@ -304,15 +287,26 @@ const multiFileBase = function(settings){
             ).toString()
         );
     };
+    /*
+     * @param {string}
+     * @private
+     * @return {boolean}
+     */
     const _check = function (id) {
         if(
             (typeof id !== 'string') ||
-            (0 > _list.indexOf(id))
+            (0 > _list.indexOf(id) )
         )
-            return false;
+            return false
         return true;
 
     }
+    /*
+     * @param {string}
+     * @param {any}
+     * @private
+     * @return {boolean}
+     */
     const _set = async function(id, val){
         if(0 > _list.indexOf(id))
              _list.push(id);
@@ -321,10 +315,45 @@ const multiFileBase = function(settings){
             JSON.stringify(val)
         );
         _updateLastSet();
+        return true;
     };
-    const count = function (){
-        return 0;
+    /*
+     * @param {string}
+     * @private
+     * @return {boolean}
+     */
+    const _del = async function(id){
+        if(typeof id !== 'string')
+            return false;
+        if (typeof _db[id] !== 'undefined')
+            delete _db[id];
+        const position = _list.indexOf(id);
+        if(  position > 0 ){
+            delete _list[
+                position
+            ];
+            _list.splice(
+                position,
+                1
+            );
+        }
+        fs.unlinkSync(
+            _fileName(id) 
+        );
+        _updateLastSet();
+        return true;
     };
+    /*
+     * @private
+     * @return {integer}
+     */
+    const _count = function (){
+        return  _list.length;
+    };
+    /*
+     * @private
+     * @return {string}
+     */
     const _hashCalculation = function(){
         return 0;
     };
