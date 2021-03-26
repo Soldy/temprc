@@ -17,33 +17,33 @@ const multiFileBase = function(settings){
      * @public
      * @return {boolean}
      */
-    this.save = function(){
-        return _save();
+    this.save = async function(){
+        return await _save();
     };
     /*
      * @param {string} id
      * @public
      * @return {mixed}
      */
-    this.get=function(id){
+    this.get= async function(id){
         if(typeof id !== 'string')
             return false;
-        return _get(id);
+        return await _get(id);
     };
     /*
      * @public
      * @return {string}
      */
-    this.hash=function(){
-        return _hashCalculation();
+    this.hash= async function(){
+        return await _hashCalculation();
 
     };
     /*
      * @public
      * @return {string}
      */
-    this.hashCheck=function(){
-        return _checkHash();
+    this.hashCheck= async function(){
+        return await _checkHash();
     };
     /*
      * @param {string} id
@@ -68,32 +68,32 @@ const multiFileBase = function(settings){
         return true;
     };
     /*
-     * @param {string}- id
+     * @param {string} id
      * @public
      * @return {boolean}
      */
-    this.check=function(id){
-        return _check(id);
+    this.check= async function(id){
+        return await _check(id);
     };
     /*
      * @public
      * @return {object}
      */
-    this.full=function(){
+    this.full=async function(){
         let list = {};
         for (let i of _list)
-            list[i] = _get(i);
+            list[i] = await _get(i);
         return list;
     };
     /*
      * @public
      * @return {object}
      */
-    this.all=function(){
+    this.all=async function(){
         let list = [];
         for (let i of _list)
             list.push(
-                _get(i)
+               await  _get(i)
             );
         return list;
     };
@@ -102,22 +102,22 @@ const multiFileBase = function(settings){
      * @public
      * @return {array}
      */
-    this.list=function(){
+    this.list=async function(){
         return _list;
     };
     /*
      * @public
      * @return integer
      */
-    this.size=function(){
-        return _count();
+    this.size=async function(){
+        return await _count();
     };
     /*
      * @public
      * @return {boolean}
      */
-    this.empty=function(){
-        if( 0 === parseInt(_count()))
+    this.empty=async function(){
+        if( 0 === parseInt(await _count()))
             return true;
         return false;
     };
@@ -125,8 +125,8 @@ const multiFileBase = function(settings){
      * @public
      * @return {object}
      */
-    this.stats=function(){
-        _count();
+    this.stats=async function(){
+        await _count();
         return _stats;
     };
     /*
@@ -134,7 +134,7 @@ const multiFileBase = function(settings){
      * @public
      * @return {boolean}
      */
-    this.importing = function(importDb){
+    this.importing = async function(importDb){
         _db = importDb;
         return true;
     };
@@ -146,39 +146,47 @@ const multiFileBase = function(settings){
         count:0,
         bytes:0,
         index:0,
-        start:(+new Date),
-        lastSet:(+new Date),
-        lastGet:(+new Date),
-        lastSave:(+new Date),
-        lastCount:(+new Date)
+        start:(Date.now()),
+        lastSet:(Date.now()),
+        lastGet:(Date.now()),
+        lastSave:(Date.now()),
+        lastCount:(Date.now())
     };
+    /*
+     * @private
+     * @var {array}
+    */
     let _list = [];
+    /*
+     * @private
+     * @var {dictonary}
+    */
     let _cache = {};
     /*
      * @private
      * @var {boolean}
      */
-    let writing = false;
+    let _writing = false;
     /*
      * @private
      * @var {boolean}
      */
-    let rewrite = false;
+    let _rewrite = false;
     /*
      * @private
      * @var {boolean}
      */
-    let autoSave = true;
+    let _autoSave = true;
     /*
      * @private
      * @var {boolean}
      */
-    let indexEnable = false;
+    let _indexEnable = false;
     /*
      * @private
      * @var {boolean}
      */
-    let hashCheck = false;
+    let _hashCheck = false;
     /*
      * @private
      * @var {array}
@@ -188,12 +196,7 @@ const multiFileBase = function(settings){
      * @private
      * @var {array}
      */
-    let cache = {};
-    /*
-     * @private
-     * @var {array}
-     */
-    let justCache = [];
+    let _justCache = [];
     const _db = {};
     const _setup = settings; 
     /*
@@ -361,12 +364,12 @@ const multiFileBase = function(settings){
      * @private
      * @return {boolean}
      */
-    const saveAuto = async function(){
+    const _saveAuto = async function(){
         if(autoSave === true)
             return await save();
         return false;
     };
-    const save = async function(){
+    const _save = async function(){
 
     }
     /*

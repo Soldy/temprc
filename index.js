@@ -19,9 +19,9 @@ const temprcBase = function(settings){
      * @public
      * @return {boolean}
      */
-    this.save = function(stor){
+    this.save = async function(stor){
         stor = _storCheck(stor);
-        return _manager[stor].save();
+        return await _manager[stor].save();
     };
     /*
      * @public
@@ -34,34 +34,34 @@ const temprcBase = function(settings){
      * @public
      * @return {boolean}
      */
-    this.indexRefresh = function(stor){
+    this.indexRefresh = async function(stor){
         stor = _storCheck(stor);
-        return _manager[stor].indexRefresh();
+        return await _manager[stor].indexRefresh();
     };
     /*
      * @param {string} id
      * @public
      * @return {mixed}
      */
-    this.get=function(id, stor){
+    this.get=async function(id, stor){
         stor = _storCheck(stor);
-        return _manager[stor].get(id);
+        return await _manager[stor].get(id);
     };
     /*
      * @public
      * @return {string}
      */
-    this.hash=function(stor){
+    this.hash=async function(stor){
         stor = _storCheck(stor);
-        return _manager[stor].hash();
+        return await _manager[stor].hash();
     };
     /*
      * @public
      * @return {string}
      */
-    this.hashCheck=function(stor){
+    this.hashCheck = async function(stor){
         stor = _storCheck(stor);
-        return _manager[stor].hashCheck();
+        return await _manager[stor].hashCheck();
     };
     /*
      * @param {string} id
@@ -78,76 +78,76 @@ const temprcBase = function(settings){
      * @public
      * @return  {boolean}
      */
-    this.set=function(id, val, stor){
+    this.set=async function(id, val, stor){
         stor = _storCheck(stor);
-        return _manager[stor].set(id, val);
+        return await _manager[stor].set(id, val);
     };
     /*
      * @param {string}- id
      * @public
      * @return {boolean}
      */
-    this.check=function(id, stor){
+    this.check = async function(id, stor){
         stor = _storCheck(stor);
-        return _manager[stor].check(id);
+        return await _manager[stor].check(id);
     };
     /*
      * @public
      * @return {object}
      */
-    this.full=function(stor){
+    this.full = async function(stor){
         stor = _storCheck(stor);
-        return _manager[stor].full();
+        return await _manager[stor].full();
     };
     /*
      * @public
      * @return {object}
      */
-    this.all=function(stor){
+    this.all = async function(stor){
         stor = _storCheck(stor);
-        return _manager[stor].all();
+        return await _manager[stor].all();
     };
     /*
      *
      * @public
      * @return {array}
      */
-    this.list=function(stor){
+    this.list = async function(stor){
         stor = _storCheck(stor);
-        return  _manager[stor].list();
+        return await _manager[stor].list();
     };
     /*
      * @public
      * @return {integer}
      */
-    this.size=function(stor){
+    this.size = async function(stor){
         stor = _storCheck(stor);
-        return _manager[stor].size();
+        return await _manager[stor].size();
     };
     /*
      * @public
      * @return {boolean}
      */
-    this.empty=function(stor){
+    this.empty = async function(stor){
         stor = _storCheck(stor);
-        return _manager[stor].empty();
+        return await _manager[stor].empty();
     };
     /*
      * @public
      * @return {object}
      */
-    this.stats=function(stor){
+    this.stats = async function(stor){
         stor = _storCheck(stor);
-        return _manager[stor].stats();
+        return await _manager[stor].stats();
     };
     /*
      * @param {object}
      * @public
      * @return {boolean}
      */
-    this.importing = function(importDb, stor){
+    this.importing = async function(importDb, stor){
         stor = _storCheck(stor);
-        return _manager[stor].importing(importDb);
+        return await _manager[stor].importing(importDb);
     };
     this.easy = function(
         storage,
@@ -169,8 +169,8 @@ const temprcBase = function(settings){
      * @public
      * @return boolean
     */
-    this.create = function(settings){
-        return _create(settings);
+    this.create = async function(settings){
+        return await _create(settings);
     };
     /*
      * @param {}
@@ -245,16 +245,15 @@ const temprcBase = function(settings){
     /*
      * @param {setuprc}
      * @private
-     * @return boolean
+     * @return oolean
      */
-    const _create = function(settings){
+    const _create = async function(settings){
         let setup = new $setuprc(
             _setup_json
         );
         setup.setup(settings);
         if(typeof _manager[setup.get('name')] !== 'undefined')
             return false;
-        console.log(setup.get('type'));
         if(setup.get('type') === 'multi'){
             _manager[setup.get('name')] = new $multi(
                 setup,

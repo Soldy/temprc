@@ -8,47 +8,47 @@ temprc.create({
 
 (async function(){
 console.log(
-    temprc.hash()
+    await temprc.hash()
 );
 console.log(
-    temprc.set('test1','hopp')
+    await temprc.set('test1','hopp')
 );
 console.log(
-    temprc.get('test1')
+    await temprc.get('test1')
 );
 console.log(
-    temprc.list()
+    await temprc.list()
 );
 console.log(
-    temprc.check('test1')
+    await temprc.check('test1')
 );
 console.log(
-    temprc.hash()
+    await temprc.hash()
 );
 console.log(
-    temprc.del('test1')
+    await temprc.del('test1')
 );
 console.log(
-    temprc.hash('multi')
+    await temprc.hash('multi')
 );
 console.log(
-    temprc.set('test1','hopp', 'multi')
+    await temprc.set('test1','hopp', 'multi')
 );
 console.log(
-    temprc.get('test1','multi')
+    await temprc.get('test1','multi')
 );
 console.log(
-    temprc.list('multi')
+    await temprc.list('multi')
 );
 console.log(
-    temprc.check('test1','multi')
+    await temprc.check('test1','multi')
 );
 console.log(
-    temprc.hash('multi')
+    await temprc.hash('multi')
 );
 
 console.log(
-    temprc.del('test1', 'multi')
+    await temprc.del('test1', 'multi')
 );
 
 

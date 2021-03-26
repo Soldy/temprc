@@ -16,15 +16,15 @@ const singleFileBase=function(settings){
      * @public
      * @return {boolean}
      */
-    this.save = function(){
-        return _save();
+    this.save = async function(){
+        return await _save();
     };
     /*
      * @public
      * @return {object} setup
      */
-    this.setup = function(){
-        return _setup;
+    this.setup = async function(){
+        return await _setup;
     };
     /*
      * @public
@@ -38,39 +38,39 @@ const singleFileBase=function(settings){
      * @public
      * @return {mixed}
      */
-    this.get=function(id){
+    this.get = async function(id){
         if(typeof id !== 'string')
             return false;
         if(typeof _db[id] === 'undefined')
             return undefined;
-        _updateLastGet();
+        await _updateLastGet();
         return _db[id];
     };
     /*
      * @public
      * @return {string}
      */
-    this.hash=function(){
-        return _hashCalculation();
+    this.hash = async function(){
+        return await _hashCalculation();
     };
     /*
      * @public
      * @return {string}
      */
-    this.hashCheck=function(){
-        return _checkHash();
+    this.hashCheck = async function(){
+        return await _checkHash();
     };
     /*
      * @param {string} id
      * @public
      * @return {boolean}
      */
-    this.del=function(id){
+    this.del = async function(id){
         if(typeof id !== 'string')
             return false;
         delete _db[id];
-        _saveAuto();
-        _updateLastSet();
+        await _saveAuto();
+        await _updateLastSet();
         return true;
     };
     /*
@@ -79,14 +79,14 @@ const singleFileBase=function(settings){
      * @public
      * @return  {boolean}
      */
-    this.set=function(id, val){
+    this.set = async function(id, val){
         if (typeof id !== 'string')
             return false;
         if (typeof val === 'undefined')
             return false;
         _db[id] = val;
-        _saveAuto();
-        _updateLastSet();
+        await _saveAuto();
+        await _updateLastSet();
         return true;
     };
     /*
@@ -94,7 +94,7 @@ const singleFileBase=function(settings){
      * @public
      * @return {boolean}
      */
-    this.check=function(id){
+    this.check = async function(id){
         if(
             (typeof id !== 'string') ||
             (typeof _db[id] === 'undefined')
@@ -106,14 +106,14 @@ const singleFileBase=function(settings){
      * @public
      * @return {object}
      */
-    this.full=function(){
+    this.full = async function(){
         return _db;
     };
     /*
      * @public
      * @return {object}
      */
-    this.all=function(){
+    this.all = async function(){
         let list = [];
         for (let i in _db)
             list.push(_db[i]);
@@ -124,7 +124,7 @@ const singleFileBase=function(settings){
      * @public
      * @return {array}
      */
-    this.list=function(){
+    this.list = async function(){
         let out = [];
         for(let i in  _db)
             out.push(i);
@@ -134,15 +134,15 @@ const singleFileBase=function(settings){
      * @public
      * @return integer
      */
-    this.size=function(){
-        return _count();
+    this.size = async function(){
+        return await _count();
     };
     /*
      * @public
      * @return {boolean}
      */
-    this.empty=function(){
-        if( 0 === parseInt(_count()))
+    this.empty = async function(){
+        if( 0 === parseInt( await _count() ) )
             return true;
         return false;
     };
@@ -150,8 +150,8 @@ const singleFileBase=function(settings){
      * @public
      * @return {object}
      */
-    this.stats=function(){
-        _count();
+    this.stats = async function(){
+        await _count();
         return _stats;
     };
     /*
@@ -159,7 +159,7 @@ const singleFileBase=function(settings){
      * @public
      * @return {boolean}
      */
-    this.importing = function(importDb){
+    this.importing = async function(importDb){
         _db = importDb;
         return true;
     };
@@ -264,20 +264,20 @@ const singleFileBase=function(settings){
             '.trcc'
         );
     };
-    const _prepareConfig = function(){
+    const _prepareConfig = async function(){
         return  {
             stats : _stats,
-            hash  : _hashCalculation()
+            hash  : await _hashCalculation()
         };
     };
     /*
      * @private
      */
-    const _saveConfig =  function(){
+    const _saveConfig = async function(){
         fs.writeFileSync(
             _config_file,
             JSON.stringify(
-                _prepareConfig(),
+                await _prepareConfig(),
                 null,
                 4
             )
@@ -286,7 +286,7 @@ const singleFileBase=function(settings){
     /*
      * @private
      */
-    const _readConfig =  function(){
+    const _readConfig = async function(){
         const config = JSON.parse(
             fs.readFileSync(
                 _config_file
@@ -298,7 +298,7 @@ const singleFileBase=function(settings){
     /*
      * @private
      */
-    const _corruptionCheck = function(){
+    const _corruptionCheck = async function(){
         if( _hashCalculation() !== _old_hash)
             _stats.corrupt.push(
                 Date.now()
@@ -308,14 +308,14 @@ const singleFileBase=function(settings){
      * @private
      * @return {boolean||void}
      */
-    const _indexClear = function(id){
+    const _indexClear = async function(id){
         if(_setup.get('indexEnable') === false)
             return false;
         for(let i of _indexable)
             if(typeof _db[id][i] !== 'undefined')
                 if(typeof _dbIndex[i][_db[id][i]] !== 'undefined')
                     delete _dbIndex[i][_db[id][i]];
-        _updateLastSet();
+        await _updateLastSet();
     };
     /*
      * @param {string}- id
@@ -323,47 +323,47 @@ const singleFileBase=function(settings){
      * @private
      * @return {boolean}
      */
-    const _indexTo = function(id, container){
+    const _indexTo = async function(id, container){
         if(_setup.get('indexEnable') === false)
             return false;
         for(let i in container)
             if(_indexable.indexOf(i) > -1)
                 _dbIndex[i][_db[id][i]]=id;
-        _updateLastSet();
+        await _updateLastSet();
         return true;
     };
     /*
      * @private
      * @return {boolean}
      */
-    const _indexAll = function(){
+    const _indexAll = async function(){
         if(_setup.get('indexEnable') === false)
             return false;
         for(let id in _db)
-            _indexTo(id, _db[id]);
-        _updateLastSet();
+            await _indexTo(id, _db[id]);
+        await _updateLastSet();
         return true;
     };
     /*
      * @private
      * @return {boolean}
      */
-    const _read = function(){
+    const _read = async function(){
         _db = JSON.parse(
             fs.readFileSync(
                 _db_file
             ).toString()
         );
         if (_setup.get('hashCheck') === true)
-            return _checkHash();
-        _updateLastRead();
+            return await _checkHash();
+        await _updateLastRead();
         return true;
     };
     /*
      * @private
      * @return {integer}
      */
-    const _count = function (){
+    const _count = async function (){
         if(_stats.lastCount > _stats.lastSet)
             return _stats.count;
         let out = 0;
@@ -382,9 +382,9 @@ const singleFileBase=function(settings){
      * @private
      * @return {boolean}
      */
-    const _checkHash = function(){
+    const _checkHash = async function(){
         return (
-            _hashCalculation() === _hash
+            await _hashCalculation() === _hash
         );
     };
     /*
@@ -433,12 +433,12 @@ const singleFileBase=function(settings){
         if (_rewrite === false )
             return true;
         _rewrite = false;
-        return _save();
+        return await _save();
     };
     /*
      * @private
      */
-    const _hashCalculation = function(){
+    const _hashCalculation = async function(){
         return crypto.createHash('sha512')
             .update(
                 JSON.stringify(_db),
@@ -450,7 +450,7 @@ const singleFileBase=function(settings){
      * @private
      * @return {boolean}
      */
-    const _updateLastGet = function (){
+    const _updateLastGet = async function (){
         _stats.lastSet = (Date.now());
         return true;
     };
@@ -458,7 +458,7 @@ const singleFileBase=function(settings){
      * @private
      * @return {boolean}
      */
-    const _updateLastSet = function (){
+    const _updateLastSet = async function (){
         _stats.lastSet = (Date.now());
         return true;
     };
@@ -466,7 +466,7 @@ const singleFileBase=function(settings){
      * @private
      * @return {boolean}
      */
-    const _updateLastSave = function (){
+    const _updateLastSave = async function (){
         _stats.lastSave = (Date.now());
         return true;
     };
@@ -474,7 +474,7 @@ const singleFileBase=function(settings){
      * @private
      * @return {boolean}
      */
-    const _updateLastRead = function (){
+    const _updateLastRead = async function (){
         _stats.lastRead = (Date.now());
         return true;
     };
