@@ -4,6 +4,7 @@
 'use strict';
 const fs = require('fs');
 const crypto = require('crypto');
+const $clonerc = new (require('clonerc')).base();
 
 /*
  * @param {string} storage file or directory or binary allocation
@@ -44,7 +45,9 @@ const singleFileBase=function(settings){
         if(typeof _db[id] === 'undefined')
             return undefined;
         await _updateLastGet();
-        return _db[id];
+        return $clonerc.clone(
+            _db[id]
+        );
     };
     /*
      * @public
@@ -107,7 +110,9 @@ const singleFileBase=function(settings){
      * @return {object}
      */
     this.full = async function(){
-        return _db;
+        return $clonerc.clone(
+            _db
+        );
     };
     /*
      * @public
@@ -116,7 +121,11 @@ const singleFileBase=function(settings){
     this.all = async function(){
         let list = [];
         for (let i in _db)
-            list.push(_db[i]);
+            list.push(
+                $clonerc.clone(
+                    _db[i]
+                )
+            );
         return list;
     };
     /*
