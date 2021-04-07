@@ -245,7 +245,7 @@ const temprcBase = function(settings){
     /*
      * @param {setuprc}
      * @private
-     * @return oolean
+     * @return {boolean}
      */
     const _create = async function(settings){
         let setup = new $setuprc(
