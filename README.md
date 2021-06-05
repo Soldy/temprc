@@ -16,7 +16,7 @@ Example:
 
     temprc.set('variable', {'test':'test string'}, 'database');
 
-    let data = temprc.get('variable', 'database');
+    let data = await temprc.get('variable', 'database');
     console.log(data.test);
     //    output : test string
 
@@ -37,7 +37,7 @@ Get variable :
 
 
 ``` javascript
-    let out = temprc.get(name, 'database');
+    let out = await temprc.get(name, 'database');
     // out = value
 
 ```
@@ -46,7 +46,7 @@ Check variable existence :
 
 
 ``` javascript
-    let out = temprc.check(name, 'database');
+    let out = await temprc.check(name, 'database');
     // out = true or false (boolean)
 
 ```
@@ -55,7 +55,7 @@ List all stored variable :
 
 ```javascript
 
-    let out = temprc.list('database');
+    let out = await temprc.list('database');
     // out = [all variable name] (array)
 
 ```
@@ -63,7 +63,7 @@ List all stored variable :
 Get all elements form the db:
 
 ```javascript
-    let out = temprc.all('database');
+    let out = await temprc.all('database');
     // out = object with all element
 ```
 
