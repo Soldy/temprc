@@ -501,19 +501,25 @@ const singleFileBase=function(settings){
         _setup.get('storage')
     );
 
-    try{
-        _read();
-    }catch(e){
-        _save();
+    const _initDb = async function(){
+        try{
+            await _read();
+        }catch(e){
+            await _save();
+        }
     }
-    try{
-        _readConfig();
-        _corruptionCheck();
-    }catch(e){
-        _old_hash = _hashCalculation();
-        _hash = _hashCalculation();
-        _saveConfig();
+    const _initConfig = async function(){
+        try{
+            await _readConfig();
+            await _corruptionCheck();
+        }catch(e){
+            _old_hash = await _hashCalculation();
+            _hash = await _hashCalculation();
+            await _saveConfig();
+        }
     }
+    _initDb();
+    _initConfig();
 };
 
 
