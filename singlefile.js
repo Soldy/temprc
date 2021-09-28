@@ -175,18 +175,23 @@ const singleFileBase=function(settings){
 
     /*
      * @private
+     * @var {integer}
+    */
+    let _now = (Date.now());
+    /*
+     * @private
      * @var {dictonary}
      */
     let _stats = {
-        count:0,
-        bytes:0,
-        index:0,
-        corrupt:[],
-        start:(Date.now()),
-        lastSet:(Date.now()),
-        lastGet:(Date.now()),
-        lastSave:(Date.now()),
-        lastCount:(Date.now())
+        count     : 0,
+        bytes     : 0,
+        index     : 0,
+        corrupt   : [],
+        start     : parseInt(_now),
+        lastSet   : parseInt(_now),
+        lastGet   : parseInt(_now),
+        lastSave  : parseInt(_now),
+        lastCount : parseInt(_now)
     };
     /*
      * @private
