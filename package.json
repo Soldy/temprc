@@ -1,6 +1,6 @@
 {
   "name": "temprc",
-  "version": "0.9.9-beta16",
+  "version": "0.9.9-beta17",
   "description": "temp db manager",
   "main": "index.js",
   "scripts": {
@@ -18,10 +18,10 @@
   },
   "homepage": "https://github.com/Soldy/temprc#readme",
   "devDependencies": {
-    "nanoTest": "^0.9.9-beta15"
+    "nanoTest": "^0.9.9-beta26"
   },
   "dependencies": {
-    "clonerc": "0.0.1",
-    "setuprc": "^0.9.9-beta16"
+    "clonerc": "0.0.5",
+    "setuprc": "^0.9.9-beta20"
   }
 }
