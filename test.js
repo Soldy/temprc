@@ -1,5 +1,8 @@
-const nanoTest  = new (require('nanoTest')).test();
+const nanoTest  = new (require('nanoTest')).test({
+    'progress_bar' : false,
+});
 const temprc = new (require('./index.js')).base({});
+
 temprc.easy(
     'db',
     'multi',
@@ -180,7 +183,7 @@ nanoTest.add(
     '===',
     false
 );
-
+/*
 nanoTest.add(
     'hash multi',
     {
@@ -201,7 +204,7 @@ nanoTest.add(
     '===',
     true
 );
-
+*/
 
 nanoTest.add(
     'stats',
