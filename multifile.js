@@ -5,6 +5,7 @@
 'use strict';
 const fs = require('fs');
 const crypto = require('crypto');
+const $clonerc = new (require('clonerc')).base();
 
 /*
  * @param {string} storageFD //storage directory
@@ -103,7 +104,9 @@ const multiFileBase = function(settings){
      * @return {array}
      */
     this.list=async function(){
-        return _list;
+        return $clonerc.clone(
+            _list
+        );
     };
     /*
      * @public
