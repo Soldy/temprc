@@ -43,7 +43,7 @@ const temprcBase = function(settings){
      * @public
      * @return {mixed}
      */
-    this.get=async function(id, stor){
+    this.get = async function(id, stor){
         stor = _storCheck(stor);
         return await _manager[stor].get(id);
     };
@@ -51,7 +51,7 @@ const temprcBase = function(settings){
      * @public
      * @return {string}
      */
-    this.hash=async function(stor){
+    this.hash = async function(stor){
         stor = _storCheck(stor);
         return await _manager[stor].hash();
     };
@@ -253,7 +253,7 @@ const temprcBase = function(settings){
         );
         setup.setup(settings);
         if(typeof _manager[setup.get('name')] !== 'undefined')
-            return false;
+            throw Error('Already exist storage');
         if(setup.get('type') === 'multi'){
             _manager[setup.get('name')] = new $multi(
                 setup,

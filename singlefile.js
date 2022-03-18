@@ -54,7 +54,8 @@ const singleFileBase=function(settings){
      * @return {string}
      */
     this.hash = async function(){
-        return await _hashCalculation();
+        _hash = await _hashCalculation();
+        return _hash;
     };
     /*
      * @public
@@ -398,7 +399,7 @@ const singleFileBase=function(settings){
      */
     const _checkHash = async function(){
         return (
-            await _hashCalculation() === _hash
+            (await _hashCalculation()) == _hash
         );
     };
     /*

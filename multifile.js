@@ -333,8 +333,8 @@ const multiFileBase = function(settings){
             return false;
         if (typeof _db[id] !== 'undefined')
             delete _db[id];
-        const position = _list.indexOf(id);
-        if(  position > 0 ){
+        const position = parseInt(_list.indexOf(id));
+        if(  position > -1 ){
             delete _list[
                 position
             ];

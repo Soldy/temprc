@@ -3,11 +3,6 @@ const nanoTest  = new (require('nanoTest')).test({
 });
 const temprc = new (require('./index.js')).base({});
 
-temprc.easy(
-    'db',
-    'multi',
-    'multi'
-);
 
 
 nanoTest.add(
@@ -153,6 +148,15 @@ nanoTest.add(
     false 
 );
 nanoTest.add(
+    'create db with easy',
+    {
+        'function':temprc.easy,
+        'options':['db','multi','multi']
+    },
+    '===',
+    true
+);
+nanoTest.add(
     'size multi',
     {
         'function':temprc.size,
@@ -262,7 +266,7 @@ nanoTest.add(
     'list multi',
     {
         'function':temprc.list,
-        'optioons':['multi']
+        'options':['multi']
     },
     'j==',
     ['test1']
