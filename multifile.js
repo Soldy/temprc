@@ -298,13 +298,23 @@ const multiFileBase = function(settings){
      * @private
      * @return {boolean}
      */
-    const _check = function (id) {
-        if(
-            (typeof id !== 'string') ||
-            (0 > _list.indexOf(id) )
-        )
-            return false
-        return true;
+    const _check = async function (id) {
+        if (typeof id !== 'string')
+            return false;
+        if ( _list.indexOf(id) > -1 )
+            return true;
+        const file_exist = await (new Promise(function(resolve, reject) {
+             fs.access(
+                 _fileName(id),
+                 fs.constants.F_OK, 
+                 function (err) {
+                     if (err)
+                         return  resolve(false);
+                     return resolve(true);
+                 }
+            );
+        }));
+        return file_exist;
 
     }
     /*
@@ -343,9 +353,10 @@ const multiFileBase = function(settings){
                 1
             );
         }
-        fs.unlinkSync(
-            _fileName(id) 
-        );
+        if( _check(id))
+            fs.unlinkSync(
+                _fileName(id) 
+            );
         _updateLastSet();
         return true;
     };
