@@ -1,6 +1,6 @@
 {
   "name": "temprc",
-  "version": "0.9.9-beta18",
+  "version": "0.9.9-beta19",
   "description": "temp db manager",
   "main": "index.js",
   "scripts": {
