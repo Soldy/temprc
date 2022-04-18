@@ -18,10 +18,11 @@
   },
   "homepage": "https://github.com/Soldy/temprc#readme",
   "devDependencies": {
-    "nanoTest": "^0.9.9-beta26"
+    "nanoTest": "^0.9.9-beta31"
   },
   "dependencies": {
-    "clonerc": "0.0.5",
-    "setuprc": "0.9.9-beta19"
+    "clonerc"        : "0.0.5",
+    "setuprc"        : "0.9.9-beta21",
+    "cheapest-sleep" : "0.99.0-alpha1"
   }
 }

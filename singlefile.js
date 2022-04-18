@@ -5,6 +5,7 @@
 const fs = require('fs');
 const crypto = require('crypto');
 const $clonerc = new (require('clonerc')).base();
+const $sleep = require('cheapest-sleep').sleep;
 
 /*
  * @param {string} storage file or directory or binary allocation
@@ -89,8 +90,8 @@ const singleFileBase=function(settings){
         if (typeof val === 'undefined')
             return false;
         _db[id] = val;
-        await _saveAuto();
         await _updateLastSet();
+        await _saveAuto();
         return true;
     };
     /*
@@ -425,6 +426,11 @@ const singleFileBase=function(settings){
             _setup.get('delayedSave')
         );
         _writingWait = true;
+        while(_writingWait){
+            await $sleep(
+                (_setup.get('delayedSave')/1000)
+            );
+        }
         return true;
     };
     /*
@@ -437,10 +443,17 @@ const singleFileBase=function(settings){
             return _rewrite = true;
         _writingProcess = false;
         _writing = true;
-        fs.writeFileSync(
+        fs.writeFile(
             _db_file,
-            JSON.stringify(_db)
+            JSON.stringify(_db),
+            _saveDone
         );
+    };
+    const _saveDone = function(err){
+        if(err){
+             console.log(err)
+             process.exit(1);
+        }
         if (_setup.get('hashCheck') === true)
             _saveConfig();
         _writing = false;
@@ -448,8 +461,8 @@ const singleFileBase=function(settings){
         if (_rewrite === false )
             return true;
         _rewrite = false;
-        return await _save();
-    };
+        _save();
+    }
     /*
      * @private
      */

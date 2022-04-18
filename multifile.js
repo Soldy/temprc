@@ -6,6 +6,7 @@
 const fs = require('fs');
 const crypto = require('crypto');
 const $clonerc = new (require('clonerc')).base();
+const $sleep = require('cheapest-sleep').sleep;
 
 /*
  * @param {string} storageFD //storage directory
@@ -60,12 +61,12 @@ const multiFileBase = function(settings){
      * @public
      * @return  {boolean}
      */
-    this.set=function(id, val){
+    this.set= async function(id, val){
         if (typeof id !== 'string')
             return false;
         if (typeof val === 'undefined')
             return false;
-        _set(id, val);
+        await _set(id, val);
         return true;
     };
     /*
@@ -165,6 +166,11 @@ const multiFileBase = function(settings){
      * @var {dictonary}
     */
     let _cache = {};
+    /*
+     * @private
+     * @var {dictonary}
+    */
+    let _writing_element = {};
     /*
      * @private
      * @var {boolean}
@@ -326,10 +332,28 @@ const multiFileBase = function(settings){
     const _set = async function(id, val){
         if(0 > _list.indexOf(id))
              _list.push(id);
-        fs.writeFileSync(
+        _writing_element[id] = true;
+        fs.writeFile(
             _fileName(id),
-            JSON.stringify(val)
+            JSON.stringify(val),
+            {
+                 encoding: "utf8",
+                 flag: "w",
+                 mode: 0o666
+            },
+            function(err){
+                if(err){
+                    console.error(err);
+                    process.exit(1);
+                }
+                delete _writing_element[id];
+            }
         );
+        while(_writing_element[id]){
+            await $sleep(
+                (_setup.get('delayedSave')/1000)
+            );
+        }
         _updateLastSet();
         return true;
     };
