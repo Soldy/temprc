@@ -290,13 +290,16 @@ const singleFileBase=function(settings){
      * @private
      */
     const _saveConfig = async function(){
-        fs.writeFileSync(
+        fs.writeFile(
             _config_file,
             JSON.stringify(
                 await _prepareConfig(),
                 null,
                 4
-            )
+            ),
+            (err)=>{
+               if(err) console.error(err);
+            }
         );
     };
     /*
