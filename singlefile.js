@@ -290,17 +290,23 @@ const singleFileBase=function(settings){
      * @private
      */
     const _saveConfig = async function(){
-        fs.writeFile(
-            _config_file,
-            JSON.stringify(
-                await _prepareConfig(),
-                null,
-                4
-            ),
-            (err)=>{
-               if(err) console.error(err);
-            }
-        );
+        return new Promise(async function(resolve, reject){
+            fs.writeFile(
+                _config_file,
+                JSON.stringify(
+                    await _prepareConfig(),
+                    null,
+                    4
+                ),
+                function (err){
+                   if(err){
+                       console.error(err);
+                       reject();
+                   }else
+                       resolve();
+                }
+            );
+        });
     };
     /*
      * @private
@@ -420,10 +426,10 @@ const singleFileBase=function(settings){
      * @return {boolean}
      */
     const _save = async function(){
-        if(_writingWait === true)
-            return false;
+        while(_writingWait)
+            await $sleep(0.004);
         if(_writingProcess !== false)
-            return clearTimeout(_writingProcess);
+            clearTimeout(_writingProcess);
         _writingProcess = setTimeout(
             _saveDo,
             _setup.get('delayedSave')
@@ -449,16 +455,16 @@ const singleFileBase=function(settings){
         fs.writeFile(
             _db_file,
             JSON.stringify(_db),
-            _saveDone
+            await _saveDone
         );
     };
-    const _saveDone = function(err){
+    const _saveDone = async function(err){
         if(err){
              console.log(err)
              process.exit(1);
         }
         if (_setup.get('hashCheck') === true)
-            _saveConfig();
+            await _saveConfig();
         _writing = false;
         _updateLastSave();
         if (_rewrite === false )
