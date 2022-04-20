@@ -207,6 +207,11 @@ const singleFileBase=function(settings){
     let _writingWait = false ;
     /*
      * @private
+     * @var {integer}
+     */
+    let _writingDate = 0 ;
+    /*
+     * @private
      * @var {boolean}
      */
     let _writing = false;
@@ -257,7 +262,10 @@ const singleFileBase=function(settings){
      * @var {array}
      */
     let _indexable = [];
-
+    /*
+     *  @param {
+     *
+     */
     /*
      * @param {string}
      * @private
@@ -426,15 +434,18 @@ const singleFileBase=function(settings){
      * @return {boolean}
      */
     const _save = async function(){
-        while(_writingWait)
-            await $sleep(0.004);
-        if(_writingProcess !== false)
-            clearTimeout(_writingProcess);
-        _writingProcess = setTimeout(
-            _saveDo,
-            _setup.get('delayedSave')
-        );
-        _writingWait = true;
+        if(
+            (_writingWait === false)||
+            (_writing === true)
+        ){
+            if(_writingProcess !== false)
+                clearTimeout(_writingProcess);
+            _writingWait = true;
+            _writingProcess = setTimeout(
+                _saveDo,
+                _setup.get('delayedSave')
+            );
+        };
         while(_writingWait){
             await $sleep(
                 (_setup.get('delayedSave')/1000)
