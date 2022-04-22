@@ -263,9 +263,18 @@ const singleFileBase=function(settings){
      */
     let _indexable = [];
     /*
+     * @private
+     * @var {boolean}
+     */
+    let _inited = false;
+    /*
      *  @param {
      *
      */
+     const _initWait = async function(){
+         while(!_inited)
+             await $sleep(0.01);
+     }
     /*
      * @param {string}
      * @private
@@ -434,6 +443,8 @@ const singleFileBase=function(settings){
      * @return {boolean}
      */
     const _save = async function(){
+        if(_inited === false)
+            await _initWait();
         if(
             (_writingWait === false)||
             (_writing === true)
@@ -539,7 +550,10 @@ const singleFileBase=function(settings){
     _dbFileName(
         _setup.get('storage')
     );
-
+    /*
+     * @private
+     *
+    */
     const _initDb = async function(){
         try{
             await _read();
@@ -547,6 +561,10 @@ const singleFileBase=function(settings){
             await _save();
         }
     }
+    /*
+     * @private
+     *
+    */
     const _initConfig = async function(){
         try{
             await _readConfig();
@@ -557,8 +575,17 @@ const singleFileBase=function(settings){
             await _saveConfig();
         }
     }
-    _initDb();
-    _initConfig();
+    /*
+     * @private
+     *
+    */
+    const _constructor = async function(){
+        await _initDb();
+        await _initConfig();
+        _inited = true;
+
+    }
+    _constructor();
 };
 
 
