@@ -558,7 +558,7 @@ const singleFileBase=function(settings){
         try{
             await _read();
         }catch(e){
-            await _save();
+            await _saveDo();
         }
     }
     /*
