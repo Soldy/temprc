@@ -9,9 +9,7 @@ const $inter = (require('./interface.js')).base;
 
 
 /*
- * @param {string} storageFD
  * @param {setuprc} settings
- * @param {array} indexes
  * @prototype
  */
 const temprcBase = function(settings){
@@ -226,13 +224,6 @@ const temprcBase = function(settings){
             'default' : 'single'
         }
     };
-
-    /*
-     * setup  helper
-     * @private
-     * @const {setuprc}
-     */
-    const _setup = new $setuprc(_setup_json);
     /*
      * @param {string}
      * @private
@@ -266,15 +257,9 @@ const temprcBase = function(settings){
         return true;
     };
 
-    /*
-     * @private
-     */
-    //    const _init = function(){
-    //    };
     // constructor
     if(typeof settings !== 'undefined')
         _create(settings);
-//    _init();
 };
 
 exports.base = temprcBase;
