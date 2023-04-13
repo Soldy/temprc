@@ -8,9 +8,7 @@ const $clonerc = new (require('clonerc')).base();
 const $sleep = require('cheapest-sleep').sleep;
 
 /*
- * @param {string} storage file or directory or binary allocation
- * @param {setuprc} setIn
- * @param {array} indexes
+ * @param {setuprc} settings
  * @prototype
  */
 const singleFileBase=function(settings){
