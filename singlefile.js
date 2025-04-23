@@ -464,10 +464,14 @@ const singleFileBase=function(settings){
             return _rewrite = true;
         _writingProcess = false;
         _writing = true;
-        await fs.writeFile(
-            _db_file,
-            JSON.stringify(_db)
-        );
+        try { 
+            await fs.writeFile(
+                _db_file,
+                JSON.stringify(_db)
+            );
+        } catch (err) {
+            console.log(err);
+        }
         await _saveDone
     };
     const _saveDone = async function(err){
@@ -527,6 +531,28 @@ const singleFileBase=function(settings){
         _stats.lastRead = (Date.now());
         return true;
     };
+
+    /**
+     *
+     *
+     * @param {string} //{str}
+     * @private
+     * @async
+    **/
+    const _fileCheckAndTouch = async (file_)=>{
+        try {
+            await fs.access(
+                file_,
+                fs.constants.F_OK
+            );
+        } catch(err) {
+            await fs.writeFile(
+                file_,
+                ''
+            );
+        }
+    };
+
     //constructor
     if(typeof _indexes !== 'undefined'){
         _indexable = indexes;
@@ -540,22 +566,30 @@ const singleFileBase=function(settings){
     _dbFileName(
         _setup.get('storage')
     );
-    /*
+
+    /**
+     *
+     * @todo refactor
      * @private
      *
     */
     const _initDb = async function(){
+        await _fileCheckAndTouch(_db_file);
         try{
             await _read();
         }catch(e){
             await _saveDo();
         }
-    }
-    /*
+    };
+
+    /**
+     *
+     * @todo refactor
      * @private
      *
     */
     const _initConfig = async function(){
+        await _fileCheckAndTouch(_config_file);
         try{
             await _readConfig();
             await _corruptionCheck();
@@ -564,7 +598,8 @@ const singleFileBase=function(settings){
             _hash = await _hashCalculation();
             await _saveConfig();
         }
-    }
+    };
+
     /*
      * @private
      *
