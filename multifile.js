@@ -3,7 +3,7 @@
  *  @Soldy\temprc\multi\2021.01.16\GPL3
  */
 'use strict';
-const fs = require('fs');
+const fs = require('node:fs/promises');
 const crypto = require('crypto');
 const $clonerc = new (require('clonerc')).base();
 const $sleep = require('cheapest-sleep').sleep;
@@ -268,8 +268,8 @@ const multiFileBase = function(settings){
     /*
      * @private
      */
-    const _saveConfig =  function(){
-        fs.writeFileSync(
+    const _saveConfig = async function(){
+        await fs.writeFile(
             _config_file,
             _prepareConfig()
         );
@@ -277,10 +277,11 @@ const multiFileBase = function(settings){
     /*
      * @private
      */
-    const _readConfig =  function(){
+    const _readConfig =  async function(){
         const config = JSON.parse(
-            fs.readFileSync(
-                _config_file
+            await fs.readFile(
+                _config_file,
+                'utf8'
             ).toString()
         );
         _stats = config.stats;
@@ -290,14 +291,20 @@ const multiFileBase = function(settings){
      * @private
      * @return {object}
      */
-    const _get = function(id){
+    const _get = async function(id){
         if(0 > _list.indexOf(id))
             return false;
-        return JSON.parse(
-            fs.readFileSync(
-                _fileName(id)
-            ).toString()
+       const data = await fs.readFile(
+           _fileName(id),
+           'utf8'
         );
+        try { 
+            return JSON.parse(
+                data
+            );
+        } catch (err) {
+            return data;
+        }
     };
     /*
      * @param {string}
@@ -309,19 +316,15 @@ const multiFileBase = function(settings){
             return false;
         if ( _list.indexOf(id) > -1 )
             return true;
-        const file_exist = await (new Promise(function(resolve, reject) {
-             fs.access(
+        try {
+            await fs.access(
                  _fileName(id),
-                 fs.constants.F_OK, 
-                 function (err) {
-                     if (err)
-                         return  resolve(false);
-                     return resolve(true);
-                 }
+                 fs.constants.F_OK
             );
-        }));
-        return file_exist;
-
+            return true;
+        } catch(err) {
+            return false;
+        }
     }
     /*
      * @param {string}
@@ -333,22 +336,21 @@ const multiFileBase = function(settings){
         if(0 > _list.indexOf(id))
              _list.push(id);
         _writing_element[id] = true;
-        fs.writeFile(
-            _fileName(id),
-            JSON.stringify(val),
-            {
-                 encoding: "utf8",
-                 flag: "w",
-                 mode: 0o666
-            },
-            function(err){
-                if(err){
-                    console.error(err);
-                    process.exit(1);
+        try { 
+            await fs.writeFile(
+                _fileName(id),
+                JSON.stringify(val),
+                {
+                   encoding: "utf8",
+                   flag: "w",
+                   mode: 0o666
                 }
-                delete _writing_element[id];
-            }
-        );
+            );
+            delete _writing_element[id];
+        } catch (err){
+            console.error(err);
+            process.exit(1);
+        }
         while(_writing_element[id]){
             await $sleep(
                 (_setup.get('delayedSave')/1000)
@@ -378,7 +380,7 @@ const multiFileBase = function(settings){
             );
         }
         if( _check(id))
-            fs.unlinkSync(
+            await fs.unlink(
                 _fileName(id) 
             );
         _updateLastSet();

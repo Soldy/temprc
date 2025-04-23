@@ -2,7 +2,7 @@
  *  @Soldy\temprc\single\2021.01.16\GPL3
  */
 'use strict';
-const fs = require('fs');
+const fs = require('node:fs/promises');
 const crypto = require('crypto');
 const $clonerc = new (require('clonerc')).base();
 const $sleep = require('cheapest-sleep').sleep;
@@ -305,30 +305,21 @@ const singleFileBase=function(settings){
      * @private
      */
     const _saveConfig = async function(){
-        return new Promise(async function(resolve, reject){
-            fs.writeFile(
+        return await fs.writeFile(
                 _config_file,
                 JSON.stringify(
                     await _prepareConfig(),
                     null,
                     4
-                ),
-                function (err){
-                   if(err){
-                       console.error(err);
-                       reject();
-                   }else
-                       resolve();
-                }
-            );
-        });
+                )
+        );
     };
     /*
      * @private
      */
     const _readConfig = async function(){
         const config = JSON.parse(
-            fs.readFileSync(
+            await fs.readFile(
                 _config_file
             ).toString()
         );
@@ -390,8 +381,9 @@ const singleFileBase=function(settings){
      */
     const _read = async function(){
         _db = JSON.parse(
-            fs.readFileSync(
-                _db_file
+            await fs.readFile(
+                _db_file,
+                'utf8'
             ).toString()
         );
         if (_setup.get('hashCheck') === true)
@@ -472,11 +464,11 @@ const singleFileBase=function(settings){
             return _rewrite = true;
         _writingProcess = false;
         _writing = true;
-        fs.writeFile(
+        await fs.writeFile(
             _db_file,
-            JSON.stringify(_db),
-            await _saveDone
+            JSON.stringify(_db)
         );
+        await _saveDone
     };
     const _saveDone = async function(err){
         if(err){
@@ -490,7 +482,7 @@ const singleFileBase=function(settings){
         if (_rewrite === false )
             return true;
         _rewrite = false;
-        _save();
+        await _save();
     }
     /*
      * @private
