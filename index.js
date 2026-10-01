@@ -155,9 +155,9 @@ const temprcBase = function(settings){
         let settings = {};
         if(typeof storage === 'string')
             settings['storage'] = storage;
-        if(typeof storage === 'string')
+        if(typeof type === 'string')
             settings['type'] = type;
-        if(typeof storage === 'string')
+        if(typeof name === 'string')
             settings['name'] = name;
         return _create(settings);
 
